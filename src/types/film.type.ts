@@ -1,4 +1,3 @@
-import { FilmGenre } from './film-genre.enum.js';
 import { Starring } from './starring.type.js';
 import { User } from './user.type.js';
 
@@ -6,7 +5,7 @@ export type Film = {
   title: string;
   description: string;
   postDate: Date;
-  genre: FilmGenre;
+  genre: string;
   released: number;
   rating: number;
   previewVideoLink: string;

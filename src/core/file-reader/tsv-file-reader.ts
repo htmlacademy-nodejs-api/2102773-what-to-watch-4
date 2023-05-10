@@ -1,44 +1,37 @@
-import { readFileSync } from 'node:fs';
 import { FileReaderInterface } from './file-reader.interface.js';
-import { Film } from '../../types/film.type.js';
-import { FilmGenre } from '../../types/film-genre.enum.js';
+import EventEmitter from 'node:events';
+import { createReadStream } from 'node:fs';
 
-export default class TSVFileReader implements FileReaderInterface {
-  private rawData = '';
+const CHUNK_SIZE = 16384; // 16KB
 
-  constructor(public filename: string) { }
-
-  public read(): void {
-    this.rawData = readFileSync(this.filename, { encoding: 'utf8' });
+export default class TSVFileReader extends EventEmitter implements FileReaderInterface {
+  constructor(public filename: string) {
+    super();
   }
 
-  public toArray(): Film[] {
-    if (!this.rawData) {
-      return [];
+  public async read(): Promise<void> {
+
+    const stream = createReadStream(this.filename, {
+      highWaterMark: CHUNK_SIZE,
+      encoding: 'utf-8',
+    });
+
+    let remainingData = '';
+    let nextLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of stream) {
+      remainingData += chunk.toString();
+
+      while ((nextLinePosition = remainingData.indexOf('\n')) >= 0) {
+        const completeRow = remainingData.slice(0, nextLinePosition + 1);
+        remainingData = remainingData.slice(++nextLinePosition);
+        importedRowCount++;
+
+        this.emit('line', completeRow);
+      }
     }
 
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim() !== '')
-      .map((line) => line.split('\t'))
-      .map(([title, description, createdDate, genre, released, rating, previewVideoLink, videoLink, starring, director, runTime, commentsCount, userName,
-        email, avatarPath, password, posterImage, backgroundImage, backgroundColor]) => ({
-        title,
-        description,
-        postDate: new Date(createdDate),
-        genre: FilmGenre[genre as 'comedy' | 'crime' | 'documentary' | 'drama' | 'horror' | 'family' | 'romance' | 'scifi' | 'thriller'],
-        released: Number.parseInt(released, 10),
-        rating: Number.parseFloat(rating),
-        previewVideoLink,
-        videoLink,
-        starring: starring.split(';').map((name) => ({name})),
-        director,
-        runTime: Number.parseInt(runTime, 10),
-        commentsCount: Number.parseInt(commentsCount, 10),
-        user: {userName, email, avatarPath, password},
-        posterImage,
-        backgroundImage,
-        backgroundColor
-      }));
+    this.emit('end', importedRowCount);
   }
 }
