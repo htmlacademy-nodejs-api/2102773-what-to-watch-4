@@ -4,19 +4,18 @@ import { MockData } from '../../types/mock-data.type.js';
 import { FilmGeneratorInterface } from './film-generator.interface.js';
 
 const FIRST_WEEK_DAY = 1;
-const LAST_WEEK_DAY = 7;
-
-const MIN_RATING = 0;
-const MAX_RATING = 10;
-
 const FIRST_YEAR = 1925;
+
+const LAST_WEEK_DAY = 7;
 const LAST_YEAR = 2023;
 
-const MIN_RUNTIME = 10;
+const MAX_RATING = 10;
 const MAX_RUNTIME = 300;
-
-const MIN_COMMENTS_COUNT = 0;
 const MAX_COMMENTS_COUNT = 100;
+
+const MIN_RATING = 0;
+const MIN_RUNTIME = 10;
+const MIN_COMMENTS_COUNT = 0;
 
 export default class FilmGenerator implements FilmGeneratorInterface {
   constructor(private readonly mockData: MockData) {}
