@@ -1,0 +1,147 @@
+{
+  "api": {
+    "titles": [
+      "What We Do in the Shadows",
+      "Legend",
+      "Dardjeeling Limited",
+      "No Country for Old Men",
+      "Gangs of new york",
+      "Once Upon a Time in America",
+      "Matrix"
+    ],
+    "descriptions": [
+      "A look into the daily (or rather, nightly) lives of three vampires who ve lived together for over 100 years, in Staten Island.",
+      "Identical twin gangsters Ronald and Reginald Kray terrorize London during the 1960s.",
+      "A year after their fathers funeral, three brothers travel across India by train in an attempt to bond with each other.",
+      "Violence and mayhem ensue after a hunter stumbles upon a drug deal gone wrong and more than two million dollars in cash near the Rio Grande.",
+      "In 1862, Amsterdam Vallon returns to the Five Points area of New York City seeking revenge against Bill the Butcher, his father's killer.",
+      "A former Prohibition-era Jewish gangster returns to the Lower East Side of Manhattan over thirty years later, where he once again must confront the ghosts and regrets of his old life.",
+      "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
+    ],
+    "genres": [
+      "comedy",
+      "crime",
+      "documentary",
+      "drama",
+      "horror",
+      "family",
+      "romance",
+      "scifi",
+      "thriller"
+    ],
+    "starrings": [
+      [
+        "Kayvan Novak",
+        "Matt Berry",
+        "Natasia Demetriou"
+      ],
+      [
+        "Tom Hardy",
+        "Emily Browning"
+      ],
+      [
+        "Owen Wilson",
+        "Adrien Brody"
+      ],
+      [
+        "Tommy Lee Jones",
+        "Javier Bardem"
+      ],
+      [
+        "Leonardo DiCaprio",
+        "Cameron Diaz"
+      ],
+      [
+        "Robert De Niro",
+        "James Woods"
+      ],
+      [
+        "Keanu Reeves",
+        "Carrie-Anne Moss"
+      ]
+
+    ],
+    "directors": [
+      "Jemaine Clement",
+      "Brian Helgeland",
+      "Wes Anderson",
+      "Ethan Coen",
+      "Martin Scorsese",
+      "Sergio Leone",
+      "Wachowski Brothers"
+    ],
+    "users": [
+      "Иван Иванов",
+      "Олег Сидоров",
+      "Пьер Безухов",
+      "Роланд Дискейн",
+      "Холи Гибни",
+      "Джек Торренс",
+      "Антон Городецкий",
+      "Борис Гесер",
+      "Рокки Бальбоа",
+      "Джон Смит"
+    ],
+    "emails": [
+      "snow@pisem.local",
+      "president@dka.local",
+      "fish@big.local",
+      "test@pisem.local",
+      "freedom@pisem.local",
+      "rolan@pochta.local",
+      "author@mir.local",
+      "test@lost.loca",
+      "kujo-fan@story.local"
+    ],
+    "avatars": [
+      "user.jpg",
+      "photo.jpg",
+      "awesome-avatar.jpg",
+      "roland.jpg",
+      "smite.jpg",
+      "coffee.jpg"
+    ],
+    "passwords": [
+      "1234567",
+      "2345678",
+      "32456785",
+      "09675438",
+      "67584632"
+    ],
+    "previewVideoLinks": [
+      "https://12.react.pages.academy/static/film/video/traffic.mp4",
+      "https://12.react.pages.academy/static/film/video/dog.mp4"
+    ],
+    "videoLinks": [
+      "https://12.react.pages.academy/static/film/video/bubbles.mp4",
+      "https://12.react.pages.academy/static/film/video/matrix.mp4"
+    ],
+    "posterImages": [
+      "What-We-Do-in-the-Shadows.jpg",
+      "Legend.jpg",
+      "Dardjeeling_Limited.jpg",
+      "No_Country_for_Old_Men.jpg",
+      "Gangs_of_New_York_Poster.jpg",
+      "Once_Upon_a_Time_in_America.jpg",
+      "matrix.jpg"
+    ],
+    "backgroundImages": [
+      "What-We-Do-in-the-Shadows.jpg",
+      "Legend.jpg",
+      "Dardjeeling_Limited.jpg",
+      "No_Country_for_Old_Men.jpg",
+      "Gangs_of_New_York_Poster.jpg",
+      "Once_Upon_a_Time_in_America.jpg",
+      "matrix.jpg"
+    ],
+    "backgroundColors": [
+      "#A39E81",
+      "#E1DAD7",
+      "#AD9F8B",
+      "#BDAD8F",
+      "#A6B7AC",
+      "#CBAC79",
+      "#B9B27E"
+    ]
+  }
+}
