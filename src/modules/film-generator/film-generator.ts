@@ -3,19 +3,30 @@ import { generateRandomValue, getRandomItem } from '../../core/helpers/index.js'
 import { MockData } from '../../types/mock-data.type.js';
 import { FilmGeneratorInterface } from './film-generator.interface.js';
 
-const FIRST_WEEK_DAY = 1;
-const FIRST_YEAR = 1925;
+enum WeekDay {
+  First = 1,
+  Last = 7
+}
 
-const LAST_WEEK_DAY = 7;
-const LAST_YEAR = 2023;
+enum Year {
+  First = 1925,
+  Last = 2023
+}
 
-const MAX_RATING = 10;
-const MAX_RUNTIME = 300;
-const MAX_COMMENTS_COUNT = 100;
+enum Rating {
+  Max = 10,
+  Min = 0
+}
 
-const MIN_RATING = 0;
-const MIN_RUNTIME = 10;
-const MIN_COMMENTS_COUNT = 0;
+enum Runtime {
+  Max = 10,
+  Min = 0
+}
+
+enum CommentsCount {
+  Max = 10,
+  Min = 0
+}
 
 export default class FilmGenerator implements FilmGeneratorInterface {
   constructor(private readonly mockData: MockData) {}
@@ -35,11 +46,11 @@ export default class FilmGenerator implements FilmGeneratorInterface {
     const backgroundColor = getRandomItem<string>(this.mockData.backgroundColors);
     const videoLink = getRandomItem<string>(this.mockData.videoLinks);
     const previewVideoLink = getRandomItem<string>(this.mockData.previewVideoLinks);
-    const postDate = dayjs().subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day').toISOString();
-    const rating = generateRandomValue(MIN_RATING, MAX_RATING).toString();
-    const released = dayjs().subtract(generateRandomValue(FIRST_YEAR, LAST_YEAR), 'year').toISOString();
-    const runTime = generateRandomValue(MIN_RUNTIME, MAX_RUNTIME).toString();
-    const commentsCount = generateRandomValue(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT).toString();
+    const postDate = dayjs().subtract(generateRandomValue(WeekDay.First, WeekDay.Last), 'day').toISOString();
+    const rating = generateRandomValue(Rating.Min, Rating.Max).toString();
+    const released = generateRandomValue(Year.First, Year.Last);
+    const runTime = generateRandomValue(Runtime.Min, Runtime.Max).toString();
+    const commentsCount = generateRandomValue(CommentsCount.Min, CommentsCount.Max).toString();
 
     return [
       title, description, postDate, genre, released, rating, previewVideoLink, videoLink,
