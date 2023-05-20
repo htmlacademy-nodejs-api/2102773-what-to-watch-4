@@ -5,7 +5,7 @@ import { LoggerInterface } from '../core/logger/logger.interface.js';
 import { AppComponent } from '../types/app-component.enum.js';
 import { DatabaseClientInterface } from '../core/database-client/database-client.interface.js';
 import { getMongoURI } from '../core/helpers/index.js';
-import { UserModel } from '../modules/user/user.model.js';
+import { UserModel } from '../modules/user/user.entity.js';
 
 @injectable()
 export default class RestApplication {
@@ -36,11 +36,10 @@ export default class RestApplication {
     this.logger.info('Init database completed');
 
     const user1 = await UserModel.create({
-      email: 'test@emailru',
+      email: 'test@email.ru',
       avatarPath: 'keks.jpg',
-      userName: 'K',
+      userName: 'Keks',
     });
-    const error = user1.validateSync();
-    console.log(error);
+    console.log(user1);
   }
 }
