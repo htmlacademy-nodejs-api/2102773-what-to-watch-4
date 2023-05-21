@@ -19,8 +19,8 @@ export default class StarringService implements StarringServiceInterface {
     return result;
   }
 
-  public async findByStarringId(categoryId: string): Promise<DocumentType<StarringEntity> | null> {
-    return this.starringModel.findById(categoryId).exec();
+  public async findByStarringId(starringId: string): Promise<DocumentType<StarringEntity> | null> {
+    return this.starringModel.findById(starringId).exec();
   }
 
   public async findByStarringName(starringName: string): Promise<DocumentType<StarringEntity> | null> {
