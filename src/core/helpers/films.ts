@@ -40,7 +40,7 @@ export function createFilm(filmData: string): Film {
     rating: Number.parseFloat(rating),
     previewVideoLink,
     videoLink,
-    starring: starring.split(';').map((name) => ({name})),
+    starrings: starring.split(';').map((name) => (name)),
     director,
     runTime: Number.parseInt(runTime, 10),
     commentsCount: Number.parseInt(commentsCount, 10),

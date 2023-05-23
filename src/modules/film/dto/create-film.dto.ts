@@ -1,6 +1,6 @@
 import { FilmGenre } from '../../../types/film-genre.enum.js';
 
-export default class CreateOfferDto {
+export default class CreateFilmDto {
   public title!: string;
   public description!: string;
   public postDate!: Date;

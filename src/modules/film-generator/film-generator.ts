@@ -36,7 +36,7 @@ export default class FilmGenerator implements FilmGeneratorInterface {
     const description = getRandomItem<string>(this.mockData.descriptions);
     const genre = getRandomItem<string>(this.mockData.genres);
     const director = getRandomItem<string>(this.mockData.directors);
-    const starring = getRandomItem<string[]>(this.mockData.starrings).join(';');
+    const starrings = getRandomItem<string[]>(this.mockData.starrings).join(';');
     const userName = getRandomItem<string>(this.mockData.users);
     const email = getRandomItem<string>(this.mockData.emails);
     const avatarPath = getRandomItem<string>(this.mockData.avatars);
@@ -54,7 +54,7 @@ export default class FilmGenerator implements FilmGeneratorInterface {
 
     return [
       title, description, postDate, genre, released, rating, previewVideoLink, videoLink,
-      starring, director, runTime, commentsCount, userName, email, avatarPath, password, posterImage, backgroundImage, backgroundColor
+      starrings, director, runTime, commentsCount, userName, email, avatarPath, password, posterImage, backgroundImage, backgroundColor
     ].join('\t');
   }
 }

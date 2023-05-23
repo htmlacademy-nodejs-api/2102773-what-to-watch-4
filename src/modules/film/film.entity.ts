@@ -1,6 +1,5 @@
 import typegoose, {defaultClasses, getModelForClass, Ref} from '@typegoose/typegoose';
 import { FilmGenre } from '../../types/film-genre.enum.js';
-import { StarringEntity } from '../starring/starring.entity.js';
 import { UserEntity } from '../user/user.entity.js';
 
 const { prop, modelOptions } = typegoose;
@@ -42,12 +41,10 @@ export class FilmEntity extends defaultClasses.TimeStamps {
   public videoLink!: string;
 
   @prop({
-    ref: StarringEntity,
-    required: true,
     default: [],
-    _id: false
-  })
-  public starrings!: Ref<StarringEntity>[];
+    required: true,
+    type: () => String})
+  public starrings!: string[];
 
   @prop({trim: true, required: true})
   public director!: string;
