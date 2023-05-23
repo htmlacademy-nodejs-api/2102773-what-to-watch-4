@@ -5,8 +5,10 @@ import { AppComponent } from '../../types/app-component.enum.js';
 import { LoggerInterface } from '../logger/logger.interface.js';
 import { DatabaseClientInterface } from './database-client.interface.js';
 
-const RETRY_COUNT = 5;
-const RETRY_TIMEOUT = 1000;
+enum Retry {
+  Count = 5,
+  TimeOut = 1000,
+}
 
 @injectable()
 export default class MongoClientService implements DatabaseClientInterface {
@@ -19,13 +21,13 @@ export default class MongoClientService implements DatabaseClientInterface {
 
   private async _connectWithRetry(uri: string): Promise<Mongoose> {
     let attempt = 0;
-    while (attempt < RETRY_COUNT) {
+    while (attempt < Retry.Count) {
       try {
         return await mongoose.connect(uri);
       } catch (error) {
         attempt++;
         this.logger.error(`Failed to connect to the database. Attempt ${attempt}`);
-        await setTimeout(RETRY_TIMEOUT);
+        await setTimeout(Retry.TimeOut);
       }
     }
 
