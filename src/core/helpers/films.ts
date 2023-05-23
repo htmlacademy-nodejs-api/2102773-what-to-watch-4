@@ -1,3 +1,4 @@
+import { FilmGenre } from '../../types/film-genre.enum.js';
 import { Film } from '../../types/film.type.js';
 
 export function createFilm(filmData: string): Film {
@@ -34,12 +35,12 @@ export function createFilm(filmData: string): Film {
     title,
     description,
     postDate: new Date(createdDate),
-    genre,
+    genre: FilmGenre[genre as 'comedy' | 'crime' | 'documentary' | 'drama' | 'horror' | 'family' | 'romance' | 'scifi' | 'thriller'],
     released: Number.parseInt(released, 10),
     rating: Number.parseFloat(rating),
     previewVideoLink,
     videoLink,
-    starring: starring.split(';').map((name) => ({name})),
+    starrings: starring.split(';').map((name) => (name)),
     director,
     runTime: Number.parseInt(runTime, 10),
     commentsCount: Number.parseInt(commentsCount, 10),
