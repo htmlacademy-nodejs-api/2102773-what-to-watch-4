@@ -1,0 +1,237 @@
+openapi: 3.0.0
+info:
+  title: API сервер для демо-проекта «Что посмотреть».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Что посмотреть».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: films
+    description: Действия с фильмами.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля
+
+      requestBody:
+        description: Авторизационные данные пользователя.
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/authUser'
+        required: true
+
+      responses:
+        "200":
+          description: Авторизация выполнена. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authInfo'
+
+        "400":
+          description: Ошибка тела запроса.
+
+      security:
+        - tokenAuth: []
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю
+
+      requestBody:
+        description: Авторизационный токен пользователя.
+        content:
+            application/json:
+              schema:
+                properties:
+                  X-Token:
+                    type: string
+                    example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+        required: true
+
+      responses:
+        "200":
+          description: Авторизация выполнена. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authInfo'
+
+        "401":
+          description: Пользователь не авторизован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authErrorMessage'
+
+  /users/logout:
+     delete:
+       tags:
+         - users
+       summary: Завершить сеанс пользователя
+       description: Завершает сеанс работы — выход из закрытой части приложения.
+
+       requestBody:
+        description: Авторизационный токен пользователя.
+        content:
+            application/json:
+              schema:
+                properties:
+                  X-Token:
+                    type: string
+                    example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+        required: true
+
+       responses:
+         "204":
+           description: Сеанс завершён.
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя. Изображение
+        аватара должно быть в формате `png` или `jpg`.
+
+      requestBody:
+        description: Ссылка на аватар пользователя.
+        content:
+          application/json:
+            schema:
+              properties:
+                  avatar:
+                    type: string
+                    example: img/1.png
+        required: true
+
+      responses:
+        "200":
+          description: Ссылка на аватар пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authInfo'
+
+        "400":
+           description: Ошибка тела запроса.
+
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        username:
+          type: string
+          example: Keks
+
+        password:
+          type: string
+          example: 123456
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+    authUser:
+      type: object
+
+      properties:
+         email:
+          type: string
+          example: keks@htmlacademy.ru
+
+         password:
+          type: string
+          example: 123456
+
+    authInfo:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        avatarUrl:
+          type: string
+          example: img/1.png
+
+        name:
+          type: string
+          example: Keks
+
+        token:
+          type: string
+          example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+
+    authErrorMessage:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You are not logged in or you do not have permission to this page.
+
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      name: X-Token
+      in: header
