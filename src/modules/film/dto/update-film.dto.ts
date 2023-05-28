@@ -6,7 +6,6 @@ export default class UpdateFilmDto {
   public postDate!: Date;
   public genre!: FilmGenre;
   public released!: number;
-  public rating!: number;
   public previewVideoLink!: string;
   public videoLink!: string;
   public starrings!: string[];
@@ -15,4 +14,5 @@ export default class UpdateFilmDto {
   public posterImage!: string;
   public backgroundImage!: string;
   public backgroundColor!: string;
+  public isFavorite!: boolean;
 }

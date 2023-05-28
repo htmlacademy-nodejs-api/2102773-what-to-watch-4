@@ -156,6 +156,229 @@ paths:
         "400":
            description: Ошибка тела запроса.
 
+  /films/films:
+    get:
+     tags:
+        - films
+     summary: Получить список фильмов
+     description: Возвращает массив фильмов. Каждый фильм описан в виде объекта.
+
+     responses:
+        "200":
+          description: Массив фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/Film'
+                    - type: object
+
+  /films/films/{filmId}:
+    get:
+     tags:
+       - films
+     summary: Получить фильм
+     description: Возвращает фильм с идентификатором `filmId`.
+
+     requestBody:
+        description: Уникальный идентификатор фильма
+        content:
+            application/json:
+              schema:
+                type: number
+                example: 1
+        required: true
+
+     responses:
+        "200":
+          description: Объект фильма
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Film'
+        "404":
+          description: Фильм не найден
+
+  /films/promo:
+    get:
+      tags:
+        - films
+      summary: Получить промо-фильм
+      description: Возвращает фильм в виде объекта.
+
+      responses:
+        "200":
+          description: Объект фильма
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Film'
+
+  /films/favorite:
+   get:
+     tags:
+       - films
+     summary: Получить список фильмов «к просмотру»
+     description: Возвращает массив фильмов, добавленных в список «к просмотру».
+
+     requestBody:
+       description: Авторизационный токен пользователя
+       content:
+            application/json:
+              schema:
+                properties:
+                  X-Token:
+                    type: string
+                    example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+       required: true
+
+     responses:
+      "200":
+          description: Массив фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#/components/schemas/Film'
+      "401":
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/authErrorMessage'
+
+  /films/favorite/{filmId}/status:
+   post:
+     tags:
+       - films
+     summary: Изменить статус «к просмотру» у фильма
+     description: Возвращает фильм с идентификатором `filmId` с актуальным состоянием поля `isFavorite`
+     parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+        - name: status
+          in: path
+          description: Статус фильма. Может быть `1` или `0`, где `1` добавляет фильма в список «к просмотру», а `0` удаляет
+          required: true
+          schema:
+            type: number
+            example: 1
+        - name: X-Token
+          in: header
+          description: Авторизационный токен пользователя
+          required: true
+          schema:
+            type: string
+            example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+     responses:
+        '200':
+          description: Объект фильма
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Film'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authErrorMessage'
+     security:
+        - tokenAuth: []
+
+  /comments/comments/{filmId}:
+    get:
+     tags:
+       - comments
+     summary: Получить список комментариев
+     description: Возвращает список комментариев для фильма с идентификатором `filmId`.
+
+     requestBody:
+        description: Уникальный идентификатор фильма
+        content:
+            application/json:
+              schema:
+                type: number
+                example: 1
+                properties:
+                  X-Token:
+                    type: string
+                    example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+        required: true
+     responses:
+      "200":
+          description: Массив комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#/components/schemas/commentGet'
+      "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/notFoundErrorMessage'
+
+    post:
+     tags:
+       - comments
+     summary: Добавить новый комментарий
+     description: Добавляет новый комментарий для фильма с идентификатором `filmId`.
+     parameters:
+        - name: X-Token
+          in: header
+          description: Авторизационный токен пользователя
+          required: true
+          schema:
+            type: string
+            example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+     requestBody:
+        description: Объект с новым комментарием
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/commentPost'
+        required: true
+     responses:
+        '200':
+          description: Массив комментариев для фильма с идентификатором `filmId`
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/commentGet'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/notFoundErrorMessage'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authErrorMessage'
+     security:
+        - tokenAuth: []
 
 components:
   schemas:
@@ -229,6 +452,101 @@ components:
         error:
           type: string
           example: You are not logged in or you do not have permission to this page.
+
+    Film:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: The Grand Budapest Hotel
+        posterImage:
+          type: string
+          example: img/the-grand-budapest-hotel-poster.jpg
+        previewImage:
+          type: string
+          example: img/the-grand-budapest-hotel.jpg
+        backgroundImage:
+          type: string
+          example: img/the-grand-budapest-hotel-bg.jpg
+        backgroundColor:
+          type: string
+          example: '#ffffff'
+        videoLink:
+          type: string
+          example: https://some-link
+        previewVideoLink:
+          type: string
+          example: https://some-link
+        description:
+          type: string
+          example: In the 1930s, the Grand Budapest Hotel is a popular European ski resort, presided over by concierge Gustave H. (Ralph Fiennes). Zero, a junior lobby boy, becomes Gustave's friend and protege.
+        rating:
+          type: number
+          example: 8.9
+        director:
+          type: string
+          example: Wes Anderson
+        starring:
+          type: array
+          items:
+            type: string
+            example: Bill Murray
+        runTime:
+          type: number
+          example: 99
+        genre:
+          type: string
+          example: Comedy
+        released:
+          type: number
+          example: 2014
+        isFavorite:
+          type: boolean
+          example: false
+
+    commentGet:
+      type: object
+      properties:
+        comment:
+          type: string
+          example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
+        date:
+          type: string
+          example: 2019-05-08T14:13:56.569Z
+        id:
+          type: number
+          example: 1
+        rating:
+          type: number
+          example: 8.9
+        user:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 4
+            name:
+              type: string
+              example: Kate Muir
+    commentPost:
+      type: object
+      properties:
+        comment:
+          type: string
+          example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
+        rating:
+          type: number
+          example: 8
+
+    notFoundErrorMessage:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Film id 999 does not exist
 
   securitySchemes:
     tokenAuth:

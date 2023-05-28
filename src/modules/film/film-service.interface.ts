@@ -12,9 +12,9 @@ export interface FilmServiceInterface {
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
   findByGenre(genre: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]>;
   findPromoById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  findToWatch(): Promise<DocumentType<FilmEntity>[]>;
-  // addToWatch(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  // deleteToWatch(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  findFavoriteFilms(isFavorite: boolean): Promise<DocumentType<FilmEntity>[]>;
+  addFavorite(filmId: string, isFavorite: boolean): Promise<DocumentType<FilmEntity> | null>;
+  deleteFavorite(filmId: string, isFavorite: boolean): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;
-  incCommentCount(offerId: string): Promise<DocumentType<FilmEntity> | null>;
+  incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
 }

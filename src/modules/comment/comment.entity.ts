@@ -25,6 +25,9 @@ export class CommentEntity extends defaultClasses.TimeStamps {
     required: true,
   })
   public userId!: Ref<FilmEntity>;
+
+  @prop({trim: true, required: true})
+  public rating!: number;
 }
 
 export const CommentModel = getModelForClass(CommentEntity);

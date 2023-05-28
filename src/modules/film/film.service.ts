@@ -19,7 +19,6 @@ export default class FilmService implements FilmServiceInterface {
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
     const result = await this.filmModel.create(dto);
     this.logger.info(`New filmId created: ${dto.title}`);
-
     return result;
   }
 
@@ -31,7 +30,22 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel
       .find()
       .populate(['userId'])
-      .exec();
+      .aggregate([
+        {
+          $lookup: {
+            from: 'comments',
+            let: { id: '$_id'},
+            pipeline: [
+              { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
+              { $project: { rating: 1}}
+            ],
+            as: 'rating'
+          },
+        },
+        { $addFields:
+          { id: { $toString: '$_id'}, commentsCount: { $size: '$comments'} }
+        },
+      ]).exec();
   }
 
   public async deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
@@ -59,9 +73,10 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel.findById(filmId).populate(['userId']).exec();
   }
 
-  public async findToWatch(): Promise<DocumentType<FilmEntity>[]> {
+  public async findFavoriteFilms(isFavorite: boolean, count?: number): Promise<DocumentType<FilmEntity>[]> {
+    const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
-      .find()
+      .find({isFavorite: isFavorite}, {}, {limit})
       .populate(['userId'])
       .exec();
   }
@@ -78,4 +93,16 @@ export default class FilmService implements FilmServiceInterface {
       }}).exec();
   }
 
+  public async deleteFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel
+      .findByIdAndUpdate(filmId, {isFavorite: false}, {new: true})
+      .exec();
+  }
+
+  public async addFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel
+      .findByIdAndUpdate(filmId, {isFavorite: true}, {new: true})
+      .populate(['userId'])
+      .exec();
+  }
 }
