@@ -18,4 +18,5 @@ export type Film = {
   posterImage: string;
   backgroundImage: string;
   backgroundColor: string;
+  isFavorite: boolean;
 }

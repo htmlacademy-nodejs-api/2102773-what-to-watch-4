@@ -1,6 +1,6 @@
 import { FilmGenre } from '../../../types/film-genre.enum.js';
 
-export default class CreateFilmDto {
+export default class UpdateFilmDto {
   public title!: string;
   public description!: string;
   public postDate!: Date;
@@ -11,7 +11,6 @@ export default class CreateFilmDto {
   public starrings!: string[];
   public director!: string;
   public runTime!: number;
-  public userId!: string;
   public posterImage!: string;
   public backgroundImage!: string;
   public backgroundColor!: string;
