@@ -1,0 +1,16 @@
+# Фильмы
+## Получить список фильмов
+GET http://localhost:5000/films HTTP/1.1
+Content-Type: application/json
+
+###
+
+## Удалить фильм
+POST http://localhost:5000/films HTTP/1.1
+Content-Type: application/json
+
+{
+  "_id": "646d0444c9a784aed6f79c5d"
+}
+
+###

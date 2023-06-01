@@ -30,22 +30,23 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel
       .find()
       .populate(['userId'])
-      .aggregate([
-        {
-          $lookup: {
-            from: 'comments',
-            let: { id: '$_id'},
-            pipeline: [
-              { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
-              { $project: { rating: 1}}
-            ],
-            as: 'rating'
-          },
-        },
-        { $addFields:
-          { id: { $toString: '$_id'}, commentsCount: { $size: '$comments'} }
-        },
-      ]).exec();
+      // .aggregate([
+      //   {
+      //     $lookup: {
+      //       from: 'comments',
+      //       let: { id: '$_id'},
+      //       pipeline: [
+      //         { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
+      //         { $project: { rating: 1}}
+      //       ],
+      //       as: 'rating'
+      //     },
+      //   },
+      //   { $addFields:
+      //     { id: { $toString: '$_id'}, commentsCount: { $size: '$comments'} }
+      //   },
+      // ])
+      .exec();
   }
 
   public async deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
