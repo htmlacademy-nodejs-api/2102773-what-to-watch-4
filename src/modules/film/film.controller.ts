@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
-
+import { ParamsDictionary } from 'express-serve-static-core';
 import { Controller } from '../../core/controller/controller.abstract.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { AppComponent } from '../../types/app-component.enum.js';
@@ -11,8 +11,15 @@ import HttpError from '../../core/errors/http-error.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import FilmRdo from './rdo/film.rdo.js';
 import { fillDTO } from '../../core/helpers/index.js';
+import UpdateFilmDto from './dto/update-film.dto.js';
+import { RequestQuery } from '../../types/request-query.type.js';
+import FilmGenreDto from './dto/film-genre.dto.js';
 
 const PROMO_FILM_NAME = 'No Country for Old Men';
+
+type ParamsFilmDetails = {
+  filmId: string;
+} | ParamsDictionary
 
 @injectable()
 export default class FilmController extends Controller {
@@ -26,11 +33,11 @@ export default class FilmController extends Controller {
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.find});
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.findPromoFilm});
-    this.addRoute({path: '/:id', method: HttpMethod.Delete, handler: this.deleteFilm});
-    this.addRoute({path: '/:id', method: HttpMethod.Patch, handler: this.updateFilm});
+    this.addRoute({path: '/:filmId', method: HttpMethod.Delete, handler: this.deleteFilm});
+    this.addRoute({path: '/:filmId', method: HttpMethod.Patch, handler: this.updateFilm});
     this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
-    this.addRoute({path: '/:id', method: HttpMethod.Get, handler: this.findById});
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.findFilmsByGenre});
+    this.addRoute({path: '/:filmId', method: HttpMethod.Get, handler: this.findById});
+    this.addRoute({path: '/genre', method: HttpMethod.Post, handler: this.findFilmsByGenre});
     this.addRoute({path: '/favorite', method: HttpMethod.Post, handler: this.favoriteFilms});
     this.addRoute({path: '/favorite/:id/:1', method: HttpMethod.Post, handler: this.addFavoriteFilm});
     this.addRoute({path: '/favorite/:id/:0', method: HttpMethod.Put, handler: this.deleteFavoriteFilm});
@@ -60,12 +67,24 @@ export default class FilmController extends Controller {
 
   public async find(_req: Request, res: Response): Promise<void> {
     const films = await this.filmService.find();
-    this.ok(res, films);
+    this.ok(res, fillDTO(FilmRdo, films));
   }
 
-  public async findById(req: Request, res: Response): Promise<void> {
-    const id = req.params.id;
-    const film = await this.filmService.findById(id);
+  public async findById(
+    {params}: Request<ParamsFilmDetails>,
+    res: Response
+  ): Promise<void> {
+    const {filmId} = params;
+    const film = await this.filmService.findById(filmId);
+
+    if (!film) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${filmId} not found.`,
+        'FilmController'
+      );
+    }
+
     this.ok(res, fillDTO(FilmRdo, film));
   }
 
@@ -78,10 +97,10 @@ export default class FilmController extends Controller {
   }
 
   public async findFilmsByGenre(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>>,
+    { body, query }: Request<Record<string, unknown>, Record<string, unknown>, FilmGenreDto, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const filmsByGenre = await this.filmService.findByGenre(body.genre);
+    const filmsByGenre = await this.filmService.findByGenre(body.genre, query.limit);
     this.ok(res, filmsByGenre);
   }
 
@@ -102,18 +121,38 @@ export default class FilmController extends Controller {
     this.ok(res, fillDTO(FilmRdo, favorite));
   }
 
-  public async deleteFilm(req: Request,res: Response): Promise<void> {
-    const id = req.params.id;
-    const result = await this.filmService.deleteById(id);
-    this.ok(res, fillDTO(FilmRdo, result));
+  public async deleteFilm(
+    {params}: Request<ParamsFilmDetails>,
+    res: Response
+  ): Promise<void> {
+    const {filmId} = params;
+    const result = await this.filmService.deleteById(filmId);
+
+    if (!result) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${filmId} not found.`,
+        'FilmController'
+      );
+    }
+
+    this.noContent(res, result);
   }
 
   public async updateFilm(
-    req: Request,
+    {body, params}: Request<ParamsFilmDetails, Record<string, unknown>, UpdateFilmDto>,
     res: Response
   ): Promise<void> {
-    const id = req.params.id;
-    const updateFilm = await this.filmService.updateById(id, req.body);
+    const updateFilm = await this.filmService.updateById(params.filmId, body);
+
+    if (!updateFilm) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${params.filmId} not found.`,
+        'FilmController'
+      );
+    }
+
     this.ok(res, fillDTO(FilmRdo, updateFilm));
   }
 }

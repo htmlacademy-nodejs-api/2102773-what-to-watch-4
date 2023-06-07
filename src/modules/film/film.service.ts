@@ -35,15 +35,23 @@ export default class FilmService implements FilmServiceInterface {
       .aggregate([
         {
           $lookup: {
-            from: 'comments',
-            let: { id: '$_id'},
-            pipeline: [
-              { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
-              { $project: { rating: 1}}
-            ],
-            as: 'rating'
-          },
-        },
+            from: 'users',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        }
+        // {
+        //   $lookup: {
+        //     from: 'comments',
+        //     let: { id: '$_id'},
+        //     pipeline: [
+        //       { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
+        //       { $project: { rating: 1}}
+        //     ],
+        //     as: 'rating'
+        //   },
+        // },
       ])
       .exec();
   }
@@ -61,7 +69,7 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findByGenre(genreName: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findByGenre(genreName: FilmGenre & undefined, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
       .find({genre: genreName}, {}, {limit})
