@@ -17,7 +17,7 @@ export default class FilmService implements FilmServiceInterface {
   ) {}
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
-    const result = await this.filmModel.create(dto);
+    const result = await this.filmModel.create({...dto, postDate: new Date()});
     this.logger.info(`New filmId created: ${dto.title}`);
     return result;
   }
@@ -26,10 +26,12 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel.findById(filmId).populate(['userId']).exec();
   }
 
+  public async findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel.findOne({title: filmName}).exec();
+  }
+
   public async find(): Promise<DocumentType<FilmEntity>[]> {
     return this.filmModel
-      .find()
-      .populate(['userId'])
       .aggregate([
         {
           $lookup: {
@@ -42,10 +44,8 @@ export default class FilmService implements FilmServiceInterface {
             as: 'rating'
           },
         },
-        { $addFields:
-          { id: { $toString: '$_id'}, commentsCount: { $size: '$comments'} }
-        },
-      ]).exec();
+      ])
+      .exec();
   }
 
   public async deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
@@ -61,22 +61,18 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findByGenre(genre: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findByGenre(genreName: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
-      .find({genre: genre}, {}, {limit})
+      .find({genre: genreName}, {}, {limit})
       .populate(['userId'])
       .exec();
   }
 
-  public async findPromoById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
-    return this.filmModel.findById(filmId).populate(['userId']).exec();
-  }
-
-  public async findFavoriteFilms(isFavorite: boolean, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findFavoriteFilms(count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
-      .find({isFavorite: isFavorite}, {}, {limit})
+      .find({isFavorite: true}, {}, {limit})
       .populate(['userId'])
       .exec();
   }
@@ -96,6 +92,7 @@ export default class FilmService implements FilmServiceInterface {
   public async deleteFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
       .findByIdAndUpdate(filmId, {isFavorite: false}, {new: true})
+      .populate(['userId'])
       .exec();
   }
 
