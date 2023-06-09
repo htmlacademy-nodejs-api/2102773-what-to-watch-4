@@ -9,7 +9,7 @@ export default class FilmRdo {
   @Expose()
   public description!: string;
 
-  @Expose()
+  @Expose({ name: 'createdAt'})
   public postDate!: Date;
 
   @Expose()
@@ -33,7 +33,7 @@ export default class FilmRdo {
   @Expose()
   public runTime!: number;
 
-  @Expose({ name: 'userId'})
+  @Expose({ name: 'user'})
   @Type(() => UserRdo)
   public user!: UserRdo;
 

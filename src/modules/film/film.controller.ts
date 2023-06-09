@@ -14,6 +14,8 @@ import { fillDTO } from '../../core/helpers/index.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { RequestQuery } from '../../types/request-query.type.js';
 import FilmGenreDto from './dto/film-genre.dto.js';
+import {CommentServiceInterface} from '../comment/comment-service.interface.js';
+import CommentRdo from '../comment/rdo/comment.rdo.js';
 
 const PROMO_FILM_NAME = 'No Country for Old Men';
 
@@ -26,6 +28,7 @@ export default class FilmController extends Controller {
   constructor(
     @inject(AppComponent.LoggerInterface) logger: LoggerInterface,
     @inject(AppComponent.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
+    @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
   ) {
     super(logger);
 
@@ -40,7 +43,8 @@ export default class FilmController extends Controller {
     this.addRoute({path: '/genre', method: HttpMethod.Post, handler: this.findFilmsByGenre});
     this.addRoute({path: '/favorite', method: HttpMethod.Post, handler: this.favoriteFilms});
     this.addRoute({path: '/favorite/:id/:1', method: HttpMethod.Post, handler: this.addFavoriteFilm});
-    this.addRoute({path: '/favorite/:id/:0', method: HttpMethod.Put, handler: this.deleteFavoriteFilm});
+    this.addRoute({path: '/favorite/:id/:0', method: HttpMethod.Patch, handler: this.deleteFavoriteFilm});
+    this.addRoute({path: '/:filmId/comments', method: HttpMethod.Get, handler: this.getComments});
   }
 
   public async create(
@@ -90,10 +94,8 @@ export default class FilmController extends Controller {
 
   public async findPromoFilm(_req: Request, res: Response): Promise<void> {
     const promoFilm = await this.filmService.findByFilmName(PROMO_FILM_NAME);
-    this.ok(
-      res,
-      fillDTO(FilmRdo, promoFilm)
-    );
+
+    this.ok(res, fillDTO(FilmRdo, promoFilm));
   }
 
   public async findFilmsByGenre(
@@ -101,7 +103,7 @@ export default class FilmController extends Controller {
     res: Response
   ): Promise<void> {
     const filmsByGenre = await this.filmService.findByGenre(body.genre, query.limit);
-    this.ok(res, filmsByGenre);
+    this.ok(res, fillDTO(FilmRdo, filmsByGenre));
   }
 
   public async favoriteFilms(_req: Request, res: Response): Promise<void> {
@@ -154,5 +156,21 @@ export default class FilmController extends Controller {
     }
 
     this.ok(res, fillDTO(FilmRdo, updateFilm));
+  }
+
+  public async getComments(
+    {params}: Request<ParamsFilmDetails, object, object>,
+    res: Response
+  ): Promise<void> {
+    if (!await this.filmService.exists(params.filmId)) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with id ${params.filmId} not found.`,
+        'OfferController'
+      );
+    }
+
+    const comments = await this.commentService.findByFilmId(params.filmId);
+    this.ok(res, fillDTO(CommentRdo, comments));
   }
 }

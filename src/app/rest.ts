@@ -20,6 +20,7 @@ export default class RestApplication {
     @inject(AppComponent.FilmController) private readonly filmController: ControllerInterface,
     @inject(AppComponent.UserController) private readonly userController: ControllerInterface,
     @inject(AppComponent.ExceptionFilterInterface) private readonly exceptionFilter: ExceptionFilterInterface,
+    @inject(AppComponent.CommentController) private commentController: ControllerInterface,
   ) {
     this.expressApplication = express();
   }
@@ -37,6 +38,7 @@ export default class RestApplication {
     this.logger.info('Controller initialization…');
     this.expressApplication.use('/films', this.filmController.router);
     this.expressApplication.use('/users', this.userController.router);
+    this.expressApplication.use('/comments', this.commentController.router);
     this.logger.info('Controller initialization completed');
   }
 

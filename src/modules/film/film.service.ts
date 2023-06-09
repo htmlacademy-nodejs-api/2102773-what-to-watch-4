@@ -17,7 +17,7 @@ export default class FilmService implements FilmServiceInterface {
   ) {}
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
-    const result = await this.filmModel.create({...dto, postDate: new Date()});
+    const result = await this.filmModel.create(dto);
     this.logger.info(`New filmId created: ${dto.title}`);
     return result;
   }
@@ -32,22 +32,25 @@ export default class FilmService implements FilmServiceInterface {
 
   public async find(): Promise<DocumentType<FilmEntity>[]> {
     return this.filmModel
+      //.find()
+      //.populate(['userId'])
       .aggregate([
         {
           $lookup: {
             from: 'users',
-            localField: '_id',
+            localField: 'userId',
             foreignField: '_id',
             as: 'user'
           }
-        }
+        },
         // {
         //   $lookup: {
         //     from: 'comments',
         //     let: { id: '$_id'},
         //     pipeline: [
         //       { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
-        //       { $project: { rating: 1}}
+        //       //{ $match: { filmId: '$id'} },
+        //       //{ $project: { rating: 1}}
         //     ],
         //     as: 'rating'
         //   },
