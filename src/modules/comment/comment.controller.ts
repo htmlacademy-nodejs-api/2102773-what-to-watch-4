@@ -11,6 +11,7 @@ import CreateCommentDto from './dto/create-comment.dto.js';
 import { AppComponent } from '../../types/app-component.enum.js';
 import { FilmServiceInterface } from '../film/film-service.interface.js';
 import CommentRdo from './rdo/comment.rdo.js';
+import { ValidateDtoMiddleware } from '../../core/middleware/validate-dto.middleware.js';
 
 export default class CommentController extends Controller {
   constructor(
@@ -21,7 +22,14 @@ export default class CommentController extends Controller {
     super(logger);
 
     this.logger.info('Register routes for CommentController…');
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [
+        new ValidateDtoMiddleware(CreateCommentDto),
+      ]
+    });
   }
 
   public async create(
@@ -38,7 +46,8 @@ export default class CommentController extends Controller {
     }
 
     const comment = await this.commentService.create(body);
-    //await this.filmService.incCommentCount(body.filmId);
+    await this.filmService.incCommentCount(body.filmId);
+    await this.filmService.calculateRating(body.filmId, body.rating);
     this.created(res, fillDTO(CommentRdo, comment));
   }
 }

@@ -68,6 +68,9 @@ export class FilmEntity extends defaultClasses.TimeStamps {
 
   @prop()
   public isFavorite!: boolean;
+
+  @prop({default: 0})
+  public rating!: number;
 }
 
 

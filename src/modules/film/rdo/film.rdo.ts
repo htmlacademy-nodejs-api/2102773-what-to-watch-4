@@ -33,7 +33,7 @@ export default class FilmRdo {
   @Expose()
   public runTime!: number;
 
-  @Expose({ name: 'user'})
+  @Expose({ name: 'userId'})
   @Type(() => UserRdo)
   public user!: UserRdo;
 
@@ -51,4 +51,7 @@ export default class FilmRdo {
 
   @Expose()
   public rating!: number;
+
+  @Expose()
+  public commentCount!: number;
 }

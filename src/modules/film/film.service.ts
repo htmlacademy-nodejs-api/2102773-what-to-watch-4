@@ -32,30 +32,8 @@ export default class FilmService implements FilmServiceInterface {
 
   public async find(): Promise<DocumentType<FilmEntity>[]> {
     return this.filmModel
-      //.find()
-      //.populate(['userId'])
-      .aggregate([
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'user'
-          }
-        },
-        // {
-        //   $lookup: {
-        //     from: 'comments',
-        //     let: { id: '$_id'},
-        //     pipeline: [
-        //       { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
-        //       //{ $match: { filmId: '$id'} },
-        //       //{ $project: { rating: 1}}
-        //     ],
-        //     as: 'rating'
-        //   },
-        // },
-      ])
+      .find()
+      .populate(['userId'])
       .exec();
   }
 
@@ -113,4 +91,24 @@ export default class FilmService implements FilmServiceInterface {
       .populate(['userId'])
       .exec();
   }
+
+  public async calculateRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel
+      // .aggregate([
+      //   {
+      //     $lookup: {
+      //       from: 'comments',
+      //       let: { id: '$_id'},
+      //       pipeline: [
+      //         { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
+      //         { $project: { rating: 1}}
+      //       ],
+      //       as: 'rating'
+      //     },
+      //   },
+      // ])
+      .findByIdAndUpdate(filmId, {'$inc': {rating: rating}})
+      .exec();
+  }
 }
+
