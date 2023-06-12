@@ -47,7 +47,7 @@ export default class CommentController extends Controller {
 
     const comment = await this.commentService.create(body);
     await this.filmService.incCommentCount(body.filmId);
-    await this.filmService.calculateRating(body.filmId, body.rating);
+    await this.filmService.calculateRating(body.filmId);
     this.created(res, fillDTO(CommentRdo, comment));
   }
 }

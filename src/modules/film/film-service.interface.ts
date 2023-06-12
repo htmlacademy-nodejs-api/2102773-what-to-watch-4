@@ -18,5 +18,5 @@ export interface FilmServiceInterface extends DocumentExistsInterface {
   deleteFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  calculateRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null>;
+  calculateRating(filmId: string): Promise<DocumentType<FilmEntity> | null>;
 }

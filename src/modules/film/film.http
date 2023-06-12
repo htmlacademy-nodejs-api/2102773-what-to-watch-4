@@ -6,7 +6,7 @@ Content-Type: application/json
 ###
 
 ## Получить фильм по Id
-GET http://localhost:5000/films/64838c1e23e2892c5d04a0b8 HTTP/1.1
+GET http://localhost:5000/films/6486ef3d116b216841237708 HTTP/1.1
 Content-Type: application/json
 
 ###
@@ -50,9 +50,9 @@ POST http://localhost:5000/films/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "title": "No Country for wweffeqqgjbdjs",
+  "title": "Проверка работы рейтинга 2",
   "description": "A year after their fathers funeral, three brothers travel across India by train in an attempt to bond with each other.",
-  "genre": "Documentary",
+  "genre": "Horror",
   "released": 2019,
   "previewVideoLink": "https://12.react.pages.academy/static/film/video/traffic.mp4",
   "videoLink": "https://12.react.pages.academy/static/film/video/matrix.mp4",
@@ -90,6 +90,7 @@ Content-Type: application/json
 ###
 
 ## Список комментариев к фильму
-GET http://localhost:5000/films/64838c1e23e2892c5d04a0b8/comments HTTP/1.1
+GET http://localhost:5000/films/6486ef3d116b216841237708/comments HTTP/1.1
 
 ###
+

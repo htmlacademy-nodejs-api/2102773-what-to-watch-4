@@ -3,10 +3,10 @@ POST http://localhost:5000/comments HTTP/1.1
 Content-Type: application/json
 
 {
-  "text": "Как обстоят дела с коробками? Фирменная упак?",
-  "filmId": "64838c1e23e2892c5d04a0b8",
-  "userId": "64838689a0cdd95db7824294",
-  "rating": 2
+  "text": "Проверка рейтинга 100500",
+  "filmId": "6486ef3d116b216841237708",
+  "userId": "64838682a0cdd95db7824291",
+  "rating": 10
 }
 
 ###
