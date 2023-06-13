@@ -7,7 +7,7 @@ import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { FilmServiceInterface } from './film-service.interface.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { FilmGenre } from '../../types/film-genre.enum.js';
-import { DEFAULT_FILM_COUNT } from './film.constant.js';
+import { DECIMAL_PLACES_COUNT, DEFAULT_FILM_COUNT } from './film.constant.js';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -32,9 +32,10 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel.findOne({title: filmName}).exec();
   }
 
-  public async find(): Promise<DocumentType<FilmEntity>[]> {
+  public async find(count?: number): Promise<DocumentType<FilmEntity>[]> {
+    const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
-      .find()
+      .find({}, {}, {limit})
       .populate(['userId'])
       .exec();
   }
@@ -119,8 +120,8 @@ export default class FilmService implements FilmServiceInterface {
       return null;
     }
 
-    const rat = result[0].avgRating;
-    return await this.filmModel.findByIdAndUpdate(filmId, {rating: rat}, {new: true}).exec();
+    const rating = Number(result[0].avgRating).toFixed(DECIMAL_PLACES_COUNT);
+    return await this.filmModel.findByIdAndUpdate(filmId, {rating: rating}, {new: true}).exec();
   }
 }
 
