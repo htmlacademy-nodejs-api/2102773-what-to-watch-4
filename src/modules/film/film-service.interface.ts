@@ -9,7 +9,7 @@ export interface FilmServiceInterface extends DocumentExistsInterface {
   create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
   findById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null>;
-  find(): Promise<DocumentType<FilmEntity>[]>;
+  find(count?: number): Promise<DocumentType<FilmEntity>[]>;
   deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
   findByGenre(genre: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]>;
