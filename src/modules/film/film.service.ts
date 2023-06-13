@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import CreateFilmDto from './dto/create-film.dto.js';
-import { DocumentType, types } from '@typegoose/typegoose';
+import { DocumentType, mongoose, types } from '@typegoose/typegoose';
 import { FilmEntity } from './film.entity.js';
 import { AppComponent } from '../../types/app-component.enum.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
@@ -8,6 +8,8 @@ import { FilmServiceInterface } from './film-service.interface.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { FilmGenre } from '../../types/film-genre.enum.js';
 import { DEFAULT_FILM_COUNT } from './film.constant.js';
+
+const ObjectId = mongoose.Types.ObjectId;
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
@@ -17,7 +19,7 @@ export default class FilmService implements FilmServiceInterface {
   ) {}
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
-    const result = await this.filmModel.create({...dto, postDate: new Date()});
+    const result = await this.filmModel.create(dto);
     this.logger.info(`New filmId created: ${dto.title}`);
     return result;
   }
@@ -32,19 +34,8 @@ export default class FilmService implements FilmServiceInterface {
 
   public async find(): Promise<DocumentType<FilmEntity>[]> {
     return this.filmModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'comments',
-            let: { id: '$_id'},
-            pipeline: [
-              { $match: { $expr: { $in: ['$$id', '$filmId'] } } },
-              { $project: { rating: 1}}
-            ],
-            as: 'rating'
-          },
-        },
-      ])
+      .find()
+      .populate(['userId'])
       .exec();
   }
 
@@ -61,7 +52,7 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findByGenre(genreName: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findByGenre(genreName: FilmGenre & undefined, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
       .find({genre: genreName}, {}, {limit})
@@ -102,4 +93,34 @@ export default class FilmService implements FilmServiceInterface {
       .populate(['userId'])
       .exec();
   }
+
+  public async calculateRating(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+    const result = await this.filmModel
+      .aggregate([
+        { $match: { _id: new ObjectId(filmId) } },
+        {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'filmId',
+            as: 'comments'
+          },
+        },
+        {
+          $group: {
+            _id: '$_id',
+            avgRating: { $max: {$avg: '$comments.rating'} }
+          },
+        },
+      ])
+      .exec();
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const rat = result[0].avgRating;
+    return await this.filmModel.findByIdAndUpdate(filmId, {rating: rat}, {new: true}).exec();
+  }
 }
+

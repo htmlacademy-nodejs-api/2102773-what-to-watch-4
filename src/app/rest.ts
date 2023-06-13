@@ -20,23 +20,9 @@ export default class RestApplication {
     @inject(AppComponent.FilmController) private readonly filmController: ControllerInterface,
     @inject(AppComponent.UserController) private readonly userController: ControllerInterface,
     @inject(AppComponent.ExceptionFilterInterface) private readonly exceptionFilter: ExceptionFilterInterface,
+    @inject(AppComponent.CommentController) private commentController: ControllerInterface,
   ) {
     this.expressApplication = express();
-  }
-
-  private async _initDb() {
-    this.logger.info('Init database…');
-
-    const mongoUri = getMongoURI(
-      this.config.get('DB_USER'),
-      this.config.get('DB_PASSWORD'),
-      this.config.get('DB_HOST'),
-      this.config.get('DB_PORT'),
-      this.config.get('DB_NAME'),
-    );
-
-    await this.databaseClient.connect(mongoUri);
-    this.logger.info('Init database completed');
   }
 
   private async _initServer() {
@@ -52,12 +38,17 @@ export default class RestApplication {
     this.logger.info('Controller initialization…');
     this.expressApplication.use('/films', this.filmController.router);
     this.expressApplication.use('/users', this.userController.router);
+    this.expressApplication.use('/comments', this.commentController.router);
     this.logger.info('Controller initialization completed');
   }
 
   private async _initMiddleware() {
     this.logger.info('Global middleware initialization…');
     this.expressApplication.use(express.json());
+    this.expressApplication.use(
+      '/upload',
+      express.static(this.config.get('UPLOAD_DIRECTORY'))
+    );
     this.logger.info('Global middleware initialization completed');
   }
 
@@ -69,8 +60,17 @@ export default class RestApplication {
 
   public async init() {
     this.logger.info('Application initialization…');
+    this.logger.info(`Get value from env $PORT: ${this.config.get('PORT')}`);
 
-    await this._initDb();
+    const mongoUri = getMongoURI(
+      this.config.get('DB_USER'),
+      this.config.get('DB_PASSWORD'),
+      this.config.get('DB_HOST'),
+      this.config.get('DB_PORT'),
+      this.config.get('DB_NAME'),
+    );
+
+    await this.databaseClient.connect(mongoUri);
     await this._initMiddleware();
     await this._initRoutes();
     await this._initExceptionFilters();

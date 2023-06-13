@@ -3,8 +3,9 @@ import {FilmEntity} from './film.entity.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { FilmGenre } from '../../types/film-genre.enum.js';
+import { DocumentExistsInterface } from '../../types/document-exists.interface.js';
 
-export interface FilmServiceInterface {
+export interface FilmServiceInterface extends DocumentExistsInterface {
   create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
   findById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null>;
@@ -17,4 +18,5 @@ export interface FilmServiceInterface {
   deleteFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  calculateRating(filmId: string): Promise<DocumentType<FilmEntity> | null>;
 }

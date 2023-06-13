@@ -28,7 +28,6 @@ export class FilmEntity extends defaultClasses.TimeStamps {
   })
   public genre!: FilmGenre;
 
-  @prop({required: true})
   public released!: number;
 
   @prop({trim: true, required: true})
@@ -69,6 +68,9 @@ export class FilmEntity extends defaultClasses.TimeStamps {
 
   @prop()
   public isFavorite!: boolean;
+
+  @prop({default: 0})
+  public rating!: number;
 }
 
 

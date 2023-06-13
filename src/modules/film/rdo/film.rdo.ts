@@ -9,7 +9,7 @@ export default class FilmRdo {
   @Expose()
   public description!: string;
 
-  @Expose()
+  @Expose({ name: 'createdAt'})
   public postDate!: Date;
 
   @Expose()
@@ -51,4 +51,7 @@ export default class FilmRdo {
 
   @Expose()
   public rating!: number;
+
+  @Expose()
+  public commentCount!: number;
 }

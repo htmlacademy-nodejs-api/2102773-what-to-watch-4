@@ -14,4 +14,5 @@ export const AppComponent = {
   FilmController: Symbol.for('FilmController'),
   UserController: Symbol.for('UserController'),
   ExceptionFilterInterface: Symbol.for('ExceptionFilterInterface'),
+  CommentController: Symbol.for('CommentController'),
 } as const;
