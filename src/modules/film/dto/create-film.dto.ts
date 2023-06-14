@@ -1,5 +1,5 @@
 import { FilmGenre } from '../../../types/film-genre.enum.js';
-import { IsDateString, IsEnum, IsMongoId, MaxLength, MinLength } from 'class-validator';
+import { IsDateString, IsEnum, MaxLength, MinLength } from 'class-validator';
 
 export default class CreateFilmDto {
   @MinLength(2, {message: 'Minimum title length must be 2'})
@@ -27,12 +27,10 @@ export default class CreateFilmDto {
 
   public runTime!: number;
 
-  @IsMongoId({message: 'userId field must be valid an id'})
   public userId!: string;
 
   public posterImage!: string;
   public backgroundImage!: string;
   public backgroundColor!: string;
-  public isFavorite!: boolean;
   public rating!: number;
 }

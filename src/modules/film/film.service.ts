@@ -8,6 +8,7 @@ import { FilmServiceInterface } from './film-service.interface.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { FilmGenre } from '../../types/film-genre.enum.js';
 import { DECIMAL_PLACES_COUNT, DEFAULT_FILM_COUNT } from './film.constant.js';
+import { TokenPayload } from '../../types/token-payload.js';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -61,10 +62,10 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findFavoriteFilms(count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findFavoriteFilms(user: TokenPayload, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
-      .find({isFavorite: true}, {}, {limit})
+      .find({isFavorite: {status: true, userId: user.id}}, {}, {limit})
       .populate(['userId'])
       .exec();
   }
@@ -81,16 +82,16 @@ export default class FilmService implements FilmServiceInterface {
       }}).exec();
   }
 
-  public async deleteFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+  public async deleteFavorite(filmId: string, user: TokenPayload): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findByIdAndUpdate(filmId, {isFavorite: false}, {new: true})
+      .findByIdAndUpdate(filmId, {isFavorite: {status: false, userId: user.id}}, {new: true})
       .populate(['userId'])
       .exec();
   }
 
-  public async addFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+  public async addFavorite(filmId: string, user: TokenPayload): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findByIdAndUpdate(filmId, {isFavorite: true}, {new: true})
+      .findByIdAndUpdate(filmId, {isFavorite: {status: true, userId: user.id}}, {new: true})
       .populate(['userId'])
       .exec();
   }

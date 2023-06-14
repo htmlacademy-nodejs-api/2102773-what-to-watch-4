@@ -4,6 +4,7 @@ import CreateFilmDto from './dto/create-film.dto.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { FilmGenre } from '../../types/film-genre.enum.js';
 import { DocumentExistsInterface } from '../../types/document-exists.interface.js';
+import { TokenPayload } from '../../types/token-payload.js';
 
 export interface FilmServiceInterface extends DocumentExistsInterface {
   create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
@@ -13,9 +14,9 @@ export interface FilmServiceInterface extends DocumentExistsInterface {
   deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
   findByGenre(genre: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]>;
-  findFavoriteFilms(): Promise<DocumentType<FilmEntity>[]>;
-  addFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  deleteFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  findFavoriteFilms(user: TokenPayload, count?: number): Promise<DocumentType<FilmEntity>[]>;
+  addFavorite(filmId: string, user: TokenPayload): Promise<DocumentType<FilmEntity> | null>;
+  deleteFavorite(filmId: string, user: TokenPayload): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   calculateRating(filmId: string): Promise<DocumentType<FilmEntity> | null>;

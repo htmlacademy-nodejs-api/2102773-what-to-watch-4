@@ -8,7 +8,6 @@ export default class CreateCommentDto {
   @IsMongoId({message: 'filmId field must be a valid id'})
   public filmId!: string;
 
-  @IsMongoId({message: 'offerId field must be a valid id'})
   public userId!: string;
 
   @Min(1, {message: 'Minimum rating is 1'})
