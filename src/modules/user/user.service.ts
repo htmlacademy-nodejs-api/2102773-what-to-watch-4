@@ -57,4 +57,22 @@ export default class UserService implements UserServiceInterface {
 
     return null;
   }
+
+  public async addFavoriteFilm(userId: string, filmId: string): Promise<DocumentType<UserEntity> | null> {
+    const user = await this.userModel.findById(userId);
+
+    if (! user) {
+      return null;
+    }
+
+    const favoriteFilmsId = user.favoriteFilms;
+    const index = favoriteFilmsId.indexOf(filmId);
+    if (index !== -1) {
+      favoriteFilmsId.splice(index, 1);
+    } else {
+      favoriteFilmsId.push(filmId);
+    }
+    return this.userModel.findByIdAndUpdate(userId, {favoriteFilms: favoriteFilmsId});
+  }
+
 }

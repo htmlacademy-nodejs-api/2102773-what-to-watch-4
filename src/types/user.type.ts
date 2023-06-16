@@ -3,4 +3,5 @@ export type User = {
   avatarPath: string;
   userName: string;
   password: string;
+  favoriteFilms: string[];
 }

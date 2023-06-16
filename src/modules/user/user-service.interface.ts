@@ -9,4 +9,5 @@ export interface UserServiceInterface {
   findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   exists(documentId: string): Promise<boolean>;
   verifyUser(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null>;
+  addFavoriteFilm(userId: string, filmId: string): Promise<DocumentType<UserEntity> | null>;
 }

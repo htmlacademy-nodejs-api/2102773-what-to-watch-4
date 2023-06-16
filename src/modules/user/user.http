@@ -5,7 +5,7 @@ POST http://localhost:5000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "torans@overlook.io",
+  "email": "torans@overlook.lhi",
   "avatarPath": "torrance.png",
   "userName": "Jack",
   "password": "123456"
@@ -19,7 +19,7 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "torans@overlook.io",
+  "email": "torans@overlook.lhi",
   "password": "123456"
 }
 

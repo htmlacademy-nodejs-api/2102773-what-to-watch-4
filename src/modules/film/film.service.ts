@@ -8,7 +8,7 @@ import { FilmServiceInterface } from './film-service.interface.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { FilmGenre } from '../../types/film-genre.enum.js';
 import { DECIMAL_PLACES_COUNT, DEFAULT_FILM_COUNT } from './film.constant.js';
-import { TokenPayload } from '../../types/token-payload.js';
+import { UserEntity } from '../user/user.entity.js';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -16,7 +16,8 @@ const ObjectId = mongoose.Types.ObjectId;
 export default class FilmService implements FilmServiceInterface {
   constructor(
     @inject(AppComponent.LoggerInterface) private readonly logger: LoggerInterface,
-    @inject(AppComponent.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>
+    @inject(AppComponent.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>,
+    @inject(AppComponent.UserModel) private readonly userModel: types.ModelType<UserEntity>
   ) {}
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
@@ -62,12 +63,17 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findFavoriteFilms(user: TokenPayload, count?: number): Promise<DocumentType<FilmEntity>[]> {
-    const limit = count ?? DEFAULT_FILM_COUNT;
+  public async findFavoriteFilms(userId: string): Promise<DocumentType<FilmEntity>[] | null> {
+
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      return null;
+    }
+
+    const favoriteFilms = user.favoriteFilms;
     return this.filmModel
-      .find({isFavorite: {status: true, userId: user.id}}, {}, {limit})
-      .populate(['userId'])
-      .exec();
+      .find({_id: favoriteFilms});
   }
 
   public async exists(documentId: string): Promise<boolean> {
@@ -80,20 +86,6 @@ export default class FilmService implements FilmServiceInterface {
       .findByIdAndUpdate(filmId, {'$inc': {
         commentCount: 1,
       }}).exec();
-  }
-
-  public async deleteFavorite(filmId: string, user: TokenPayload): Promise<DocumentType<FilmEntity> | null> {
-    return this.filmModel
-      .findByIdAndUpdate(filmId, {isFavorite: {status: false, userId: user.id}}, {new: true})
-      .populate(['userId'])
-      .exec();
-  }
-
-  public async addFavorite(filmId: string, user: TokenPayload): Promise<DocumentType<FilmEntity> | null> {
-    return this.filmModel
-      .findByIdAndUpdate(filmId, {isFavorite: {status: true, userId: user.id}}, {new: true})
-      .populate(['userId'])
-      .exec();
   }
 
   public async calculateRating(filmId: string): Promise<DocumentType<FilmEntity> | null> {
