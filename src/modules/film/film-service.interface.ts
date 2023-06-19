@@ -13,9 +13,7 @@ export interface FilmServiceInterface extends DocumentExistsInterface {
   deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
   findByGenre(genre: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]>;
-  findFavoriteFilms(): Promise<DocumentType<FilmEntity>[]>;
-  addFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  deleteFavorite(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  findFavoriteFilms(user: string): Promise<DocumentType<FilmEntity>[] | null>;
   exists(documentId: string): Promise<boolean>;
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   calculateRating(filmId: string): Promise<DocumentType<FilmEntity> | null>;

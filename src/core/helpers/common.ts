@@ -1,5 +1,7 @@
 import * as crypto from 'node:crypto';
 import { plainToInstance, ClassConstructor } from 'class-transformer';
+import * as jose from 'jose';
+import { TokenPayload } from '../../types/token-payload.js';
 
 export function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : '';
@@ -18,4 +20,12 @@ export function createErrorObject(message: string) {
 
 export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
   return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
+}
+
+export async function createJWT(algorithm: string, jwtSecret: string, payload: TokenPayload): Promise<string> {
+  return new jose.SignJWT({ ...payload })
+    .setProtectedHeader({ alg: algorithm })
+    .setIssuedAt()
+    .setExpirationTime('2d')
+    .sign(crypto.createSecretKey(jwtSecret, 'utf-8'));
 }

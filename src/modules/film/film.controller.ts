@@ -19,8 +19,10 @@ import CommentRdo from '../comment/rdo/comment.rdo.js';
 import { ValidateObjectIdMiddleware } from '../../core/middleware/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../core/middleware/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../core/middleware/document-exists.middleware.js';
-
-const PROMO_FILM_NAME = 'No Country for Old Men';
+import { PrivateRouteMiddleware } from '../../core/middleware/private-route.middleware.js';
+import { PROMO_FILM_NAME } from './film.constant.js';
+import { UserServiceInterface } from '../user/user-service.interface.js';
+import FavoriteUserRdo from '../user/rdo/favorite-user.rdo.js';
 
 type ParamsFilmDetails = {
   filmId: string;
@@ -32,6 +34,7 @@ export default class FilmController extends Controller {
     @inject(AppComponent.LoggerInterface) logger: LoggerInterface,
     @inject(AppComponent.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
     @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
+    @inject(AppComponent.UserServiceInterface) private readonly userService: UserServiceInterface,
   ) {
     super(logger);
 
@@ -39,12 +42,20 @@ export default class FilmController extends Controller {
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromoFilm});
-    this.addRoute({path: '/favorite', method: HttpMethod.Get, handler: this.getFavoriteFilms});
+    this.addRoute({
+      path: '/favorite',
+      method: HttpMethod.Get,
+      handler: this.getFavoriteFilms,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+      ]
+    });
     this.addRoute({
       path: '/:filmId',
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('filmId'),
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId')
       ]
@@ -54,16 +65,20 @@ export default class FilmController extends Controller {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('filmId'),
         new ValidateDtoMiddleware(UpdateFilmDto),
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId')
-      ],
+      ]
     });
     this.addRoute({
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateFilmDto)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateFilmDto)
+      ]
     });
     this.addRoute({
       path: '/:filmId',
@@ -76,17 +91,15 @@ export default class FilmController extends Controller {
     });
     this.addRoute({path: '/genre', method: HttpMethod.Post, handler: this.findFilmsByGenre});
     this.addRoute({
-      path: '/favorite/:filmId/:1',
+      path: '/favorite/:filmId/',
       method: HttpMethod.Patch,
-      handler: this.addFavoriteFilm,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      handler: this.addOrDeleteFavoriteFilm,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId')
+      ]
     });
-    this.addRoute({
-      path: '/favorite/:filmId/:0',
-      method: HttpMethod.Post,
-      handler: this.deleteFavoriteFilm,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
-    });
+
     this.addRoute({
       path: '/:filmId/comments',
       method: HttpMethod.Get,
@@ -99,7 +112,7 @@ export default class FilmController extends Controller {
   }
 
   public async create(
-    {body}: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
+    { body, user }: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
     res: Response,
   ): Promise<void> {
     const existsFilm = await this.filmService.findByFilmName(body.title);
@@ -112,7 +125,7 @@ export default class FilmController extends Controller {
       );
     }
 
-    const result = await this.filmService.create(body);
+    const result = await this.filmService.create({ ...body, userId: user.id,});
     const film = await this.filmService.findById(result.id);
     this.created(
       res,
@@ -147,27 +160,19 @@ export default class FilmController extends Controller {
     this.ok(res, fillDTO(FilmRdo, filmsByGenre));
   }
 
-  public async getFavoriteFilms(_req: Request, res: Response): Promise<void> {
-    const favoriteFilms = await this.filmService.findFavoriteFilms();
+  public async getFavoriteFilms({ user }: Request<Record<string, unknown>, Record<string, unknown>>,
+    res: Response,): Promise<void> {
+    const favoriteFilms = await this.filmService.findFavoriteFilms(user.id);
     this.ok(res, fillDTO(FilmRdo, favoriteFilms));
   }
 
-  public async addFavoriteFilm(
-    {params}: Request<ParamsFilmDetails>,
+  public async addOrDeleteFavoriteFilm(
+    {params, user}: Request<ParamsFilmDetails, Record<string, unknown>, Record<string, unknown>>,
     res: Response
   ): Promise<void> {
     const {filmId} = params;
-    const favorite = await this.filmService.addFavorite(filmId);
-    this.ok(res, fillDTO(FilmRdo, favorite));
-  }
-
-  public async deleteFavoriteFilm(
-    {params}: Request<ParamsFilmDetails>,
-    res: Response
-  ): Promise<void> {
-    const {filmId} = params;
-    const favorite = await this.filmService.deleteFavorite(filmId);
-    this.ok(res, fillDTO(FilmRdo, favorite));
+    const favorite = await this.userService.addFavoriteFilm(user.id, filmId);
+    this.ok(res, fillDTO(FavoriteUserRdo ,favorite));
   }
 
   public async delete(
