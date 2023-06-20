@@ -6,7 +6,7 @@ Content-Type: application/json
 ###
 
 ## Получить фильм по Id
-GET http://localhost:5000/films/646d0505939d8eb55902bbbe HTTP/1.1
+GET http://localhost:5000/films/6491f4743ee80ff08a87a97d HTTP/1.1
 Content-Type: application/json
 
 ###
@@ -30,22 +30,22 @@ Content-Type: application/json
 ## Получить список избранных фильмов
 GET http://localhost:5000/films/favorite HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5saGkiLCJpZCI6IjY0OGM3ODY3MjgzNzAyZjE1YTA1MGFhZCIsImlhdCI6MTY4NjkyNzQ3MCwiZXhwIjoxNjg3MTAwMjcwfQ.StMKCHzI8NMp7HZv9JSOtZtciE1cnMsF_L2YcF4Y7xw
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhIiwiaWQiOiI2NDkxZWI3NzY3N2Q4N2Y0OTQ2NjQ1MmQiLCJpYXQiOjE2ODcyODQ2OTksImV4cCI6MTY4NzQ1NzQ5OX0.tc9P6_EtDMT9oxz-juHyQ9ZHMFpkE7EckmV-GsDGOWM
 ###
 
 ## Добавить или удалить фильм в избранное
-PATCH http://localhost:5000/films/favorite/64862889e74d5a03322daa75 HTTP/1.1
+PATCH http://localhost:5000/films/favorite/6491eb77677d87f49466452a HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5saGkiLCJpZCI6IjY0OGM3ODY3MjgzNzAyZjE1YTA1MGFhZCIsImlhdCI6MTY4NjkyNzQ3MCwiZXhwIjoxNjg3MTAwMjcwfQ.StMKCHzI8NMp7HZv9JSOtZtciE1cnMsF_L2YcF4Y7xw
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhIiwiaWQiOiI2NDkxZWI3NzY3N2Q4N2Y0OTQ2NjQ1MmQiLCJpYXQiOjE2ODcyODQ2OTksImV4cCI6MTY4NzQ1NzQ5OX0.tc9P6_EtDMT9oxz-juHyQ9ZHMFpkE7EckmV-GsDGOWM
 ###
 
 ## Добавить фильм
 POST http://localhost:5000/films/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0ODM1YjU1NGMzODkxZmMwYWY4MWEwOSIsImlhdCI6MTY4Njc2NTY0NSwiZXhwIjoxNjg2OTM4NDQ1fQ.TQMklWB2t61xVzK-rbgMiYQZOqGsLHQUvBBsmYISvao
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5saGkiLCJpZCI6IjY0OGM3ODY3MjgzNzAyZjE1YTA1MGFhZCIsImlhdCI6MTY4NzI3NzkxNywiZXhwIjoxNjg3NDUwNzE3fQ.7zHZzY_sDJraxLqW79YbUBIBTj27TrPjLAFhSW7DayE
 
 {
-  "title": "Проверкаhccкноевоcwsjhwjw",
+  "title": "Проверкаhccfefveкноевоcwsjhwjw",
   "description": "A year after their fathers funeral, three brothers travel across India by train in an attempt to bond with each other.",
   "genre": "Horror",
   "released": 2019,

@@ -13,10 +13,10 @@ enum Year {
   Last = 2023
 }
 
-enum Rating {
-  Max = 10,
-  Min = 0
-}
+// enum Rating {
+//   Max = 10,
+//   Min = 0
+// }
 
 enum Runtime {
   Max = 10,
@@ -47,7 +47,7 @@ export default class FilmGenerator implements FilmGeneratorInterface {
     const videoLink = getRandomItem<string>(this.mockData.videoLinks);
     const previewVideoLink = getRandomItem<string>(this.mockData.previewVideoLinks);
     const postDate = dayjs().subtract(generateRandomValue(WeekDay.First, WeekDay.Last), 'day').toISOString();
-    const rating = generateRandomValue(Rating.Min, Rating.Max).toString();
+    const rating = '0';
     const released = generateRandomValue(Year.First, Year.Last);
     const runTime = generateRandomValue(Runtime.Min, Runtime.Max).toString();
     const commentsCount = generateRandomValue(CommentsCount.Min, CommentsCount.Max).toString();

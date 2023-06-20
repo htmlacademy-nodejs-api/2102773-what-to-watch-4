@@ -22,7 +22,9 @@ import { DocumentExistsMiddleware } from '../../core/middleware/document-exists.
 import { PrivateRouteMiddleware } from '../../core/middleware/private-route.middleware.js';
 import { PROMO_FILM_NAME } from './film.constant.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
-import FavoriteUserRdo from '../user/rdo/favorite-user.rdo.js';
+//import FavoriteUserRdo from '../user/rdo/favorite-user.rdo.js';
+import { ConfigInterface } from '../../core/config/config.interface.js';
+import { RestSchema } from '../../core/config/rest.schema.js';
 
 type ParamsFilmDetails = {
   filmId: string;
@@ -35,8 +37,9 @@ export default class FilmController extends Controller {
     @inject(AppComponent.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
     @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
     @inject(AppComponent.UserServiceInterface) private readonly userService: UserServiceInterface,
+    @inject(AppComponent.ConfigInterface) configService: ConfigInterface<RestSchema>,
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for FilmController…');
 
@@ -171,8 +174,9 @@ export default class FilmController extends Controller {
     res: Response
   ): Promise<void> {
     const {filmId} = params;
-    const favorite = await this.userService.addFavoriteFilm(user.id, filmId);
-    this.ok(res, fillDTO(FavoriteUserRdo ,favorite));
+    await this.userService.addFavoriteFilm(user.id, filmId);
+    const films = await this.filmService.findById(filmId);
+    this.ok(res, {...fillDTO(FilmRdo, films), isFavorite: true});
   }
 
   public async delete(

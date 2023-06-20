@@ -46,8 +46,8 @@ export default class FilmRdo {
   @Expose()
   public backgroundColor!: string;
 
-  @Expose()
-  public isFavorite!: boolean;
+  // @Expose()
+  // public isFavorite!: boolean;
 
   @Expose()
   public rating!: number;
