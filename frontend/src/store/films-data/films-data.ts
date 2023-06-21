@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
 import { FilmsState } from '../../types/state';
 import { addFilm, deleteFilm, editFilm, fetchFilms } from '../api-actions';
+import { adaptFilmToClient, adaptFilmsToClient } from '../../utils/adapters/adaptersToClient';
 
 const initialState: FilmsState = {
   films: [],
@@ -18,7 +19,7 @@ export const filmsData = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchFilms.fulfilled, (state, action) => {
-        state.films = action.payload;
+        state.films = adaptFilmsToClient(action.payload);
         state.isLoading = false;
       })
       .addCase(fetchFilms.rejected, (state) => {
@@ -30,7 +31,7 @@ export const filmsData = createSlice({
       .addCase(editFilm.fulfilled, (state, action) => {
         const updatedFilm = action.payload;
         state.films = state.films.map((film) =>
-          film.id === updatedFilm.id ? updatedFilm : film
+          film.id === adaptFilmToClient(updatedFilm).id ? adaptFilmToClient(updatedFilm) : film
         );
       })
       .addCase(deleteFilm.fulfilled, (state, action) => {

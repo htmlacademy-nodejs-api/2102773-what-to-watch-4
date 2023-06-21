@@ -5,28 +5,32 @@ import { Review } from '../types/review';
 import { NewReview } from '../types/new-review';
 import { AuthData } from '../types/auth-data';
 import { Token } from '../types/token';
-import { NewFilm } from '../types/new-film';
+//import { NewFilm } from '../types/new-film';
 import { APIRoute, DEFAULT_GENRE, NameSpace } from '../const';
 import { User } from '../types/user';
-import { NewUser } from '../types/new-user';
+//import { NewUser } from '../types/new-user';
 import { dropToken, saveToken } from '../services/token';
+import FilmDto from '../dto/film/film.dto.js';
+import UpdateFilmDto from '../dto/film/update-film.dto';
+import CreateUserDto from '../dto/user/create-user.dto.js';
+import CreateFilmDto from '../dto/film/create-film.dto.js';
 
 type Extra = {
   api: AxiosInstance;
 };
 
-export const fetchFilms = createAsyncThunk<Film[], undefined, { extra: Extra }>(
+export const fetchFilms = createAsyncThunk<FilmDto[], undefined, { extra: Extra }>(
   `${NameSpace.Films}/fetchFilms`,
   async (_arg, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Film[]>(APIRoute.Films);
+    const { data } = await api.get<FilmDto[]>(APIRoute.Films);
 
     return data;
   }
 );
 
 export const fetchFilmsByGenre = createAsyncThunk<
-  Film[],
+FilmDto[],
   string,
   { extra: Extra }
 >(`${NameSpace.Genre}/fetchFilmsByGenre`, async (genre, { extra }) => {
@@ -35,26 +39,26 @@ export const fetchFilmsByGenre = createAsyncThunk<
   if (genre === DEFAULT_GENRE) {
     route = APIRoute.Films;
   }
-  const { data } = await api.get<Film[]>(route);
+  const { data } = await api.get<FilmDto[]>(route);
 
   return data;
 });
 
-export const fetchFilm = createAsyncThunk<Film, string, { extra: Extra }>(
+export const fetchFilm = createAsyncThunk<FilmDto, string, { extra: Extra }>(
   `${NameSpace.Film}/fetchFilm`,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Film>(`${APIRoute.Films}/${id}`);
+    const { data } = await api.get<FilmDto>(`${APIRoute.Films}/${id}`);
 
     return data;
   }
 );
 
-export const editFilm = createAsyncThunk<Film, Film, { extra: Extra }>(
+export const editFilm = createAsyncThunk<FilmDto, UpdateFilmDto, { extra: Extra }>(
   `${NameSpace.Film}/editFilm`,
   async (filmData, { extra }) => {
     const { api } = extra;
-    const { data } = await api.patch<Film>(
+    const { data } = await api.patch<FilmDto>(
       `${APIRoute.Films}/${filmData.id}`,
       filmData
     );
@@ -63,7 +67,7 @@ export const editFilm = createAsyncThunk<Film, Film, { extra: Extra }>(
   }
 );
 
-export const addFilm = createAsyncThunk<Film, NewFilm, { extra: Extra }>(
+export const addFilm = createAsyncThunk<Film, CreateFilmDto, { extra: Extra }>(
   `${NameSpace.Film}/addFilm`,
   async (filmData, { extra }) => {
     const { api } = extra;
@@ -155,11 +159,11 @@ export const fetchFavoriteFilms = createAsyncThunk<
   return data;
 });
 
-export const fetchPromo = createAsyncThunk<Film, undefined, { extra: Extra }>(
+export const fetchPromo = createAsyncThunk<FilmDto, undefined, { extra: Extra }>(
   `${NameSpace.Promo}/fetchPromo`,
   async (_arg, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Film>(APIRoute.Promo);
+    const { data } = await api.get<FilmDto>(APIRoute.Promo);
 
     return data;
   }
@@ -186,18 +190,18 @@ export const unsetFavorite = createAsyncThunk<
   return data;
 });
 
-export const registerUser = createAsyncThunk<void, NewUser, { extra: Extra }>(
+export const registerUser = createAsyncThunk<void, CreateUserDto, { extra: Extra }>(
   `${NameSpace.User}/register`,
-  async ({ email, password, name, avatar }, { extra }) => {
+  async ({ email, password, userName, avatarPath }, { extra }) => {
     const { api } = extra;
     const { data } = await api.post<{ id: string }>(APIRoute.Register, {
       email,
       password,
-      name,
+      userName,
     });
-    if (avatar) {
+    if (avatarPath) {
       const payload = new FormData();
-      payload.append('avatar', avatar);
+      payload.append('avatar', avatarPath);
       await api.post(`users/${data.id}${APIRoute.Avatar}`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });

@@ -8,6 +8,7 @@ import {
   setFavorite,
   unsetFavorite,
 } from '../api-actions';
+import { adaptFilmToClient } from '../../utils/adapters/adaptersToClient';
 
 const initialState: FavoriteFilmsState = {
   favoriteFilms: [],
@@ -56,7 +57,7 @@ export const favoriteFilmsData = createSlice({
         const updatedFilm = action.payload;
         if (updatedFilm.isFavorite) {
           state.favoriteFilms = state.favoriteFilms.map((film) =>
-            film.id === updatedFilm.id ? updatedFilm : film
+            film.id === adaptFilmToClient(updatedFilm).id ? adaptFilmToClient(updatedFilm) : film
           );
         }
       })

@@ -10,6 +10,7 @@ import { GENRES, AppRoute } from '../../const';
 import { addFilm } from '../../store/api-actions';
 import { getActiveFilm } from '../../store/film-data/selectors';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { adaptCreateFilmToServer } from '../../utils/adapters/adaptersToServer';
 
 const emptyFilm: NewFilm = {
   name: '',
@@ -33,7 +34,7 @@ function AddFilmPage() {
 
   const handleSubmit = useCallback(
     async (filmData: NewFilm) => {
-      const response = await dispatch(addFilm(filmData));
+      const response = await dispatch(addFilm(adaptCreateFilmToServer(filmData)));
       if (response.meta.requestStatus === 'rejected') {
         toast.error('Can\'t add film');
       } else if (activeFilm) {

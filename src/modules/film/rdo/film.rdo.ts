@@ -4,6 +4,9 @@ import UserRdo from '../../user/rdo/user.rdo.js';
 
 export default class FilmRdo {
   @Expose()
+  public id!: string;
+
+  @Expose()
   public title!: string;
 
   @Expose()

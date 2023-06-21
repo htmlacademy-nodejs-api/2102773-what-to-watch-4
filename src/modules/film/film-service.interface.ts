@@ -2,7 +2,7 @@ import {DocumentType} from '@typegoose/typegoose';
 import {FilmEntity} from './film.entity.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
-import { FilmGenre } from '../../types/film-genre.enum.js';
+//import { FilmGenre } from '../../types/film-genre.enum.js';
 import { DocumentExistsInterface } from '../../types/document-exists.interface.js';
 
 export interface FilmServiceInterface extends DocumentExistsInterface {
@@ -12,7 +12,7 @@ export interface FilmServiceInterface extends DocumentExistsInterface {
   find(count?: number): Promise<DocumentType<FilmEntity>[]>;
   deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
-  findByGenre(genre: FilmGenre, count?: number): Promise<DocumentType<FilmEntity>[]>;
+  findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]>;
   findFavoriteFilms(user: string): Promise<DocumentType<FilmEntity>[] | null>;
   exists(documentId: string): Promise<boolean>;
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;

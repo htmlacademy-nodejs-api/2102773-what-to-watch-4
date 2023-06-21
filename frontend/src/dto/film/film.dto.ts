@@ -1,6 +1,6 @@
 import UserDto from '../user/user.dto.js';
 
-export default class CreateFilmDto {
+export default class FilmDto {
   public id!: string;
   public title!: string;
   public description!: string;

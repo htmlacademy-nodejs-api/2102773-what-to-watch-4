@@ -7,6 +7,7 @@ import {
   editFilm,
   fetchFilmsByGenre,
 } from '../api-actions';
+import { adaptFilmToClient, adaptFilmsToClient } from '../../utils/adapters/adaptersToClient';
 
 const initialState: GenreState = {
   activeGenre: DEFAULT_GENRE,
@@ -28,7 +29,7 @@ export const genreData = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchFilmsByGenre.fulfilled, (state, action) => {
-        state.filmsByGenre = action.payload;
+        state.filmsByGenre = adaptFilmsToClient(action.payload);
         state.isLoading = false;
       })
       .addCase(fetchFilmsByGenre.rejected, (state) => {
@@ -44,7 +45,7 @@ export const genreData = createSlice({
         const updatedFilm = action.payload;
         if (updatedFilm.genre === state.activeGenre) {
           state.filmsByGenre = state.filmsByGenre.map((film) =>
-            film.id === updatedFilm.id ? updatedFilm : film
+            film.id === adaptFilmToClient(updatedFilm).id ? adaptFilmToClient(updatedFilm) : film
           );
         }
       })

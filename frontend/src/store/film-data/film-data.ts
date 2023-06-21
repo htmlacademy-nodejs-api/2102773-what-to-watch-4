@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
 import { FilmState } from '../../types/state';
 import { addFilm, deleteFilm, editFilm, fetchFilm, setFavorite, unsetFavorite } from '../api-actions';
+import { adaptFilmToClient } from '../../utils/adapters/adaptersToClient';
 
 const initialState: FilmState = {
   film: null,
@@ -19,7 +20,7 @@ export const filmData = createSlice({
       })
       .addCase(fetchFilm.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.film = action.payload;
+        state.film = adaptFilmToClient(action.payload);
       })
       .addCase(fetchFilm.rejected, (state) => {
         state.isLoading = false;
@@ -39,7 +40,7 @@ export const filmData = createSlice({
       })
       .addCase(editFilm.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.film = action.payload;
+        state.film = adaptFilmToClient(action.payload);
       })
       .addCase(editFilm.rejected, (state) => {
         state.isLoading = false;

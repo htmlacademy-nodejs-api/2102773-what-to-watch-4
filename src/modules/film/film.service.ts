@@ -6,7 +6,7 @@ import { AppComponent } from '../../types/app-component.enum.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { FilmServiceInterface } from './film-service.interface.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
-import { FilmGenre } from '../../types/film-genre.enum.js';
+//import { FilmGenre } from '../../types/film-genre.enum.js';
 import { DECIMAL_PLACES_COUNT, DEFAULT_FILM_COUNT } from './film.constant.js';
 import { UserEntity } from '../user/user.entity.js';
 
@@ -55,7 +55,7 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findByGenre(genreName: FilmGenre & undefined, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findByGenre(genreName: string, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
       .find({genre: genreName}, {}, {limit})

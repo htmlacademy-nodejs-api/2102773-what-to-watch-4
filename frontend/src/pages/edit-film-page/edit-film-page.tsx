@@ -15,6 +15,7 @@ import { fetchFilm, editFilm } from '../../store/api-actions';
 import { useAppSelector, useAppDispatch } from '../../hooks/';
 import { Film } from '../../types/film';
 import { AppRoute } from '../../const';
+import { adaptEditFilmToServer } from '../../utils/adapters/adaptersToServer';
 
 function EditFilmPage() {
   const dispatch = useAppDispatch();
@@ -32,7 +33,7 @@ function EditFilmPage() {
   }, [dispatch, id]);
 
   const handleSubmit = useCallback(async (filmData: Film) => {
-    const response = await dispatch(editFilm(filmData));
+    const response = await dispatch(editFilm(adaptEditFilmToServer(filmData)));
     if (response.meta.requestStatus === 'rejected') {
       toast.error('Can\'t edit film');
     } else {
