@@ -30,7 +30,7 @@ export const filmData = createSlice({
       })
       .addCase(addFilm.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.film = action.payload;
+        state.film = adaptFilmToClient(action.payload);
       })
       .addCase(addFilm.rejected, (state) => {
         state.isLoading = false;
@@ -50,7 +50,7 @@ export const filmData = createSlice({
       })
       .addCase(deleteFilm.fulfilled, (state, action) => {
         state.isLoading = false;
-        const deletedFilm = action.payload;
+        const deletedFilm = adaptFilmToClient(action.payload);
         if (deletedFilm.id === state.film?.id) {
           state.film = null;
         }

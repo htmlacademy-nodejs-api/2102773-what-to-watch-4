@@ -89,7 +89,7 @@ Content-Type: application/json
 ###
 
 ## Список комментариев к фильму
-GET http://localhost:5000/films/6486ef3d116b216841237708/comments HTTP/1.1
+GET http://localhost:5000/films/comments/64935b3dc2f453d6ed9cede8 HTTP/1.1
 
 ###
 

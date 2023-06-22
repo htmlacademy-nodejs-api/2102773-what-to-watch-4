@@ -38,7 +38,7 @@ export const genreData = createSlice({
       .addCase(addFilm.fulfilled, (state, action) => {
         const newFilm = action.payload;
         if (newFilm.genre === state.activeGenre) {
-          state.filmsByGenre.push(newFilm);
+          state.filmsByGenre.push(adaptFilmToClient(newFilm));
         }
       })
       .addCase(editFilm.fulfilled, (state, action) => {
@@ -50,7 +50,7 @@ export const genreData = createSlice({
         }
       })
       .addCase(deleteFilm.fulfilled, (state, action) => {
-        const deletedFilm = action.payload;
+        const deletedFilm = adaptFilmToClient(action.payload);
         if (deletedFilm.genre === state.activeGenre) {
           state.filmsByGenre = state.filmsByGenre.filter(
             (film) => film.id !== deletedFilm.id

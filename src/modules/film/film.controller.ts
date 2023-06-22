@@ -116,7 +116,7 @@ export default class FilmController extends Controller {
     });
 
     this.addRoute({
-      path: '/:filmId/comments',
+      path: '/comments/:filmId',
       method: HttpMethod.Get,
       handler: this.getComments,
       middlewares: [

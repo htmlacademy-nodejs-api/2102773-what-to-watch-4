@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace, SubmitStatus } from '../../const';
 import { ReviewsState } from '../../types/state';
 import { fetchReviews, postReview } from '../api-actions';
+import { adaptCommentToClient, adaptCommentsToClient } from '../../utils/adapters/adaptersToClient';
 
 const initialState: ReviewsState = {
   reviews: [],
@@ -19,7 +20,7 @@ export const reviewsData = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchReviews.fulfilled, (state, action) => {
-        state.reviews = action.payload;
+        state.reviews = adaptCommentsToClient(action.payload);
         state.isLoading = false;
       })
       .addCase(fetchReviews.rejected, (state) => {
@@ -29,7 +30,7 @@ export const reviewsData = createSlice({
         state.submitStatus = SubmitStatus.Pending;
       })
       .addCase(postReview.fulfilled, (state, action) => {
-        state.reviews.push(action.payload);
+        state.reviews.push(adaptCommentToClient(action.payload));
         state.submitStatus = SubmitStatus.Fullfilled;
       })
       .addCase(postReview.rejected, (state) => {

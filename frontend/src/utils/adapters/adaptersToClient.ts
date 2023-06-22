@@ -66,16 +66,25 @@ export const adaptLoginToClient =
    token: user.token,
  });
 
+export const adaptCommentToClient =
+ (comment: CommentDto): Review => ({
+   id: comment.id,
+   comment: comment.text,
+   date: comment.postDate,
+   rating: comment.rating,
+   user: adaptUserToClient(comment.user),
+ });
+
 export const adaptCommentsToClient =
- (comments: CommentDto[]): Review[] =>
-   comments
-     .filter((comment: CommentDto) =>
-       comment.user !== null,
-     )
-     .map((comment: CommentDto) => ({
-       id: comment.id,
-       comment: comment.text,
-       date: comment.postDate,
-       rating: comment.rating,
-       user: adaptUserToClient(comment.user),
-     }));
+     (comments: CommentDto[]): Review[] =>
+       comments
+         .filter((comment: CommentDto) =>
+           comment.user !== null,
+         )
+         .map((comment: CommentDto) => ({
+           id: comment.id,
+           comment: comment.text,
+           date: comment.postDate,
+           rating: comment.rating,
+           user: adaptUserToClient(comment.user),
+         }));

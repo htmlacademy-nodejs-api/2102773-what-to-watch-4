@@ -2,18 +2,22 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
 import { Film } from '../types/film';
 import { Review } from '../types/review';
-import { NewReview } from '../types/new-review';
+//import { NewReview } from '../types/new-review';
 import { AuthData } from '../types/auth-data';
 import { Token } from '../types/token';
 //import { NewFilm } from '../types/new-film';
 import { APIRoute, DEFAULT_GENRE, NameSpace } from '../const';
-import { User } from '../types/user';
+//import { User } from '../types/user';
 //import { NewUser } from '../types/new-user';
 import { dropToken, saveToken } from '../services/token';
 import FilmDto from '../dto/film/film.dto.js';
 import UpdateFilmDto from '../dto/film/update-film.dto';
-import CreateUserDto from '../dto/user/create-user.dto.js';
-import CreateFilmDto from '../dto/film/create-film.dto.js';
+import CreateUserDto from '../dto/user/create-user.dto';
+import CreateFilmDto from '../dto/film/create-film.dto';
+import CommentDto from '../dto/comments/comment.dto';
+import CreateCommentDto from '../dto/comments/create-comment.dto';
+import UserWithTokenDto from '../dto/user/user-with-token.dto';
+import UserDto from '../dto/user/user.dto';
 
 type Extra = {
   api: AxiosInstance;
@@ -67,54 +71,54 @@ export const editFilm = createAsyncThunk<FilmDto, UpdateFilmDto, { extra: Extra 
   }
 );
 
-export const addFilm = createAsyncThunk<Film, CreateFilmDto, { extra: Extra }>(
+export const addFilm = createAsyncThunk<FilmDto, CreateFilmDto, { extra: Extra }>(
   `${NameSpace.Film}/addFilm`,
   async (filmData, { extra }) => {
     const { api } = extra;
-    const { data } = await api.post<Film>(APIRoute.Films, filmData);
+    const { data } = await api.post<FilmDto>(APIRoute.Films, filmData);
 
     return data;
   }
 );
 
-export const deleteFilm = createAsyncThunk<Film, string, { extra: Extra }>(
+export const deleteFilm = createAsyncThunk<FilmDto, string, { extra: Extra }>(
   `${NameSpace.Film}/deleteFilm`,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.delete<Film>(`${APIRoute.Films}/${id}`);
+    const { data } = await api.delete<FilmDto>(`${APIRoute.Films}/${id}`);
 
     return data;
   }
 );
 
 export const fetchReviews = createAsyncThunk<
-  Review[],
+CommentDto[],
   string,
   { extra: Extra }
 >(`${NameSpace.Reviews}/fetchReviews`, async (id, { extra }) => {
   const { api } = extra;
-  const { data } = await api.get<Review[]>(`${APIRoute.Comments}/${id}`);
+  const { data } = await api.get<CommentDto[]>(`${APIRoute.Comments}/${id}`);
 
   return data;
 });
 
 export const postReview = createAsyncThunk<
-  Review,
-  { id: Review['id']; review: NewReview },
+  CommentDto,
+  { id: Review['id']; review: CreateCommentDto },
   { extra: Extra }
 >(`${NameSpace.Reviews}/postReview`, async ({ id, review }, { extra }) => {
   const { api } = extra;
-  const { data } = await api.post<Review>(`${APIRoute.Comments}/${id}`, review);
+  const { data } = await api.post<CommentDto>(`${APIRoute.NewComment}/${id}`, review);
 
   return data;
 });
 
-export const checkAuth = createAsyncThunk<User, undefined, { extra: Extra }>(
+export const checkAuth = createAsyncThunk<UserDto, undefined, { extra: Extra }>(
   `${NameSpace.User}/checkAuth`,
   async (_arg, { extra }) => {
     const { api } = extra;
     try {
-      const { data } = await api.get<User>(APIRoute.Login);
+      const { data } = await api.get<UserDto>(APIRoute.Login);
       return data;
     } catch (error) {
       dropToken();
@@ -123,12 +127,12 @@ export const checkAuth = createAsyncThunk<User, undefined, { extra: Extra }>(
   }
 );
 
-export const login = createAsyncThunk<User, AuthData, { extra: Extra }>(
+export const login = createAsyncThunk<UserWithTokenDto, AuthData, { extra: Extra }>(
   `${NameSpace.User}/login`,
   async (authData, { extra }) => {
     const { api } = extra;
 
-    const { data } = await api.post<User & { token: Token }>(
+    const { data } = await api.post<UserWithTokenDto & { token: Token }>(
       APIRoute.Login,
       authData
     );

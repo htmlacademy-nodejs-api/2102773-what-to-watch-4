@@ -32,7 +32,7 @@ export const promoData = createSlice({
         }
       })
       .addCase(deleteFilm.fulfilled, (state, action) => {
-        const deletedFilm = action.payload;
+        const deletedFilm = adaptFilmToClient(action.payload);
         if (deletedFilm.id === state.promoFilm?.id) {
           state.promoFilm = null;
         }

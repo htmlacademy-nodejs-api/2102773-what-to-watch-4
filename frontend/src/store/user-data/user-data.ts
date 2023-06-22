@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace, AuthorizationStatus } from '../../const';
 import { UserState } from '../../types/state';
 import { checkAuth, login, logout } from '../api-actions';
+import { adaptLoginToClient, adaptUserToClient } from '../../utils/adapters/adaptersToClient';
 
 const initialState: UserState = {
   authorizationStatus: AuthorizationStatus.Unknown,
@@ -15,7 +16,7 @@ export const userData = createSlice({
   extraReducers(builder) {
     builder
       .addCase(checkAuth.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = adaptUserToClient(action.payload);
         state.authorizationStatus = AuthorizationStatus.Auth;
       })
       .addCase(checkAuth.rejected, (state) => {
@@ -23,7 +24,7 @@ export const userData = createSlice({
         state.authorizationStatus = AuthorizationStatus.NoAuth;
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = adaptLoginToClient(action.payload);
         state.authorizationStatus = AuthorizationStatus.Auth;
       })
       .addCase(logout.fulfilled, (state) => {

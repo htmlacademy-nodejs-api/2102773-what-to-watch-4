@@ -26,7 +26,7 @@ export const filmsData = createSlice({
         state.isLoading = false;
       })
       .addCase(addFilm.fulfilled, (state, action) => {
-        state.films.push(action.payload);
+        state.films.push(adaptFilmToClient(action.payload));
       })
       .addCase(editFilm.fulfilled, (state, action) => {
         const updatedFilm = action.payload;
@@ -36,7 +36,7 @@ export const filmsData = createSlice({
       })
       .addCase(deleteFilm.fulfilled, (state, action) => {
         state.films = state.films.filter(
-          (film) => film.id !== action.payload.id
+          (film) => film.id !== adaptFilmToClient(action.payload).id
         );
       });
   },

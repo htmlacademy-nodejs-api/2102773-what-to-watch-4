@@ -11,6 +11,7 @@ import { useAppSelector, useAppDispatch } from '../../hooks/';
 import { postReview, fetchFilm } from '../../store/api-actions';
 import { NewReview } from '../../types/new-review';
 import { getActiveFilm, getIsLoading } from '../../store/film-data/selectors';
+import { adaptCreateCommentToServer } from '../../utils/adapters/adaptersToServer';
 
 function AddReviewPage() {
   const dispatch = useAppDispatch();
@@ -35,12 +36,14 @@ function AddReviewPage() {
     return <NotFoundPage />;
   }
 
-  const handleReviewFormSubmit = async (review: NewReview) => {
+  const handleReviewFormSubmit = async (comment: NewReview) => {
     if (!id) {
       return;
     }
 
-    const response = await dispatch(postReview({ id, review }));
+    const review = adaptCreateCommentToServer(comment);
+
+    const response = await (dispatch(postReview({ id, review})));
     if (response.meta.requestStatus === 'rejected') {
       toast.error('Can\'t post review');
     } else {
