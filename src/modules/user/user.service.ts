@@ -18,7 +18,7 @@ export default class UserService implements UserServiceInterface {
   ) {}
 
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
-    const user = new UserEntity({...dto, avatarPath: DEFAULT_AVATAR_FILE_NAME});
+    const user = new UserEntity({...dto, avatar: DEFAULT_AVATAR_FILE_NAME});
     user.setPassword(dto.password, salt);
 
     const result = await this.userModel.create(user);
@@ -75,10 +75,23 @@ export default class UserService implements UserServiceInterface {
 
     const favoriteFilmsId = user.favoriteFilms;
     const index = favoriteFilmsId.indexOf(filmId);
+    if (index === -1) {
+      favoriteFilmsId.push(filmId);
+    }
+    return this.userModel.findByIdAndUpdate(userId, {favoriteFilms: favoriteFilmsId});
+  }
+
+  public async deleteFavoriteFilm(userId: string, filmId: string): Promise<DocumentType<UserEntity> | null> {
+    const user = await this.userModel.findById(userId);
+
+    if (! user) {
+      return null;
+    }
+
+    const favoriteFilmsId = user.favoriteFilms;
+    const index = favoriteFilmsId.indexOf(filmId);
     if (index !== -1) {
       favoriteFilmsId.splice(index, 1);
-    } else {
-      favoriteFilmsId.push(filmId);
     }
     return this.userModel.findByIdAndUpdate(userId, {favoriteFilms: favoriteFilmsId});
   }

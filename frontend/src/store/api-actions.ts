@@ -2,22 +2,18 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
 import { Film } from '../types/film';
 import { Review } from '../types/review';
-//import { NewReview } from '../types/new-review';
 import { AuthData } from '../types/auth-data';
 import { Token } from '../types/token';
-//import { NewFilm } from '../types/new-film';
-import { APIRoute, DEFAULT_GENRE, NameSpace } from '../const';
-//import { User } from '../types/user';
-//import { NewUser } from '../types/new-user';
+import { APIRoute, DEFAULT_GENRE, HTTP_CODE, NameSpace } from '../const';
 import { dropToken, saveToken } from '../services/token';
 import FilmDto from '../dto/film/film.dto.js';
 import UpdateFilmDto from '../dto/film/update-film.dto';
-import CreateUserDto from '../dto/user/create-user.dto';
 import CreateFilmDto from '../dto/film/create-film.dto';
 import CommentDto from '../dto/comments/comment.dto';
 import CreateCommentDto from '../dto/comments/create-comment.dto';
 import UserWithTokenDto from '../dto/user/user-with-token.dto';
 import UserDto from '../dto/user/user.dto';
+import { NewUser } from '../types/new-user';
 
 type Extra = {
   api: AxiosInstance;
@@ -146,19 +142,17 @@ export const login = createAsyncThunk<UserWithTokenDto, AuthData, { extra: Extra
 export const logout = createAsyncThunk<void, undefined, { extra: Extra }>(
   `${NameSpace.User}/logout`,
   async (_arg, { extra }) => {
-    const { api } = extra;
-    await api.delete(APIRoute.Logout);
     dropToken();
   }
 );
 
 export const fetchFavoriteFilms = createAsyncThunk<
-  Film[],
+FilmDto[],
   undefined,
   { extra: Extra }
 >(`${NameSpace.FavoriteFilms}/fetchFavoriteFilms`, async (_arg, { extra }) => {
   const { api } = extra;
-  const { data } = await api.get<Film[]>(APIRoute.Favorite);
+  const { data } = await api.get<FilmDto[]>(APIRoute.Favorite);
 
   return data;
 });
@@ -173,42 +167,44 @@ export const fetchPromo = createAsyncThunk<FilmDto, undefined, { extra: Extra }>
   }
 );
 
-export const setFavorite = createAsyncThunk<Film, Film['id'], { extra: Extra }>(
+export const setFavorite = createAsyncThunk<FilmDto, Film['id'], { extra: Extra }>(
   `${NameSpace.FavoriteFilms}/setFavorite`,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.post<Film>(`${APIRoute.Favorite}/${id}`);
+    const { data } = await api.post<FilmDto>(`${APIRoute.Favorite}/${id}`);
 
     return data;
   }
 );
 
 export const unsetFavorite = createAsyncThunk<
-  Film,
+FilmDto,
   Film['id'],
   { extra: Extra }
 >(`${NameSpace.FavoriteFilms}/unsetFavorite`, async (id, { extra }) => {
   const { api } = extra;
-  const { data } = await api.delete<Film>(`${APIRoute.Favorite}/${id}`);
+  const { data } = await api.delete<FilmDto>(`${APIRoute.Favorite}/${id}`);
 
   return data;
 });
 
-export const registerUser = createAsyncThunk<void, CreateUserDto, { extra: Extra }>(
+export const registerUser = createAsyncThunk<void, NewUser, { extra: Extra }>(
   `${NameSpace.User}/register`,
-  async ({ email, password, userName, avatarPath }, { extra }) => {
+  async ({ email, password, name, avatar }, { extra }) => {
     const { api } = extra;
-    const { data } = await api.post<{ id: string }>(APIRoute.Register, {
+    const postData = await api.post<{ id: string }>(APIRoute.Register, {
       email,
       password,
-      userName,
+      name,
     });
-    if (avatarPath) {
+
+    if (postData.status === HTTP_CODE.CREATED && avatar) {
       const payload = new FormData();
-      payload.append('avatar', avatarPath);
-      await api.post(`users/${data.id}${APIRoute.Avatar}`, payload, {
+      payload.append('avatar', avatar);
+      await api.post(`users/${postData.data.id}${APIRoute.Avatar}`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     }
   }
 );
+

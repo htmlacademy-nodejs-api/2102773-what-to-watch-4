@@ -59,10 +59,10 @@ export const filmData = createSlice({
         state.isLoading = false;
       })
       .addCase(setFavorite.fulfilled, (state, action) => {
-        state.film = action.payload;
+        state.film = adaptFilmToClient(action.payload);
       })
       .addCase(unsetFavorite.fulfilled, (state, action) => {
-        state.film = action.payload;
+        state.film = adaptFilmToClient(action.payload);
       });
   },
 });

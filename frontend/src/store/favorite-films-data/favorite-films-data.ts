@@ -8,7 +8,7 @@ import {
   setFavorite,
   unsetFavorite,
 } from '../api-actions';
-import { adaptFilmToClient } from '../../utils/adapters/adaptersToClient';
+import { adaptFilmToClient, adaptFilmsToClient } from '../../utils/adapters/adaptersToClient';
 
 const initialState: FavoriteFilmsState = {
   favoriteFilms: [],
@@ -26,7 +26,7 @@ export const favoriteFilmsData = createSlice({
       })
       .addCase(fetchFavoriteFilms.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.favoriteFilms = action.payload;
+        state.favoriteFilms = adaptFilmsToClient(action.payload);
       })
       .addCase(fetchFavoriteFilms.rejected, (state) => {
         state.isLoading = false;
@@ -36,7 +36,7 @@ export const favoriteFilmsData = createSlice({
       })
       .addCase(setFavorite.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.favoriteFilms = state.favoriteFilms.concat(action.payload);
+        state.favoriteFilms = state.favoriteFilms.concat(adaptFilmToClient(action.payload));
       })
       .addCase(setFavorite.rejected, (state) => {
         state.isLoading = false;

@@ -5,7 +5,6 @@ import { AppRoute } from '../../const';
 import { useAppDispatch } from '../../hooks';
 import { registerUser } from '../../store/api-actions';
 import { NewUser } from '../../types/new-user';
-import { adaptSignupToServer } from '../../utils/adapters/adaptersToServer';
 
 function RegisterForm() {
   const dispatch = useAppDispatch();
@@ -31,7 +30,7 @@ function RegisterForm() {
       avatar,
     };
 
-    const response = await dispatch(registerUser(adaptSignupToServer(formData)));
+    const response = await dispatch(registerUser(formData));
     if (response.meta.requestStatus === 'rejected') {
       toast.error('Can\'t sign up');
     } else {

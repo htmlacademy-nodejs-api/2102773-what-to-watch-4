@@ -11,5 +11,6 @@ export interface UserServiceInterface {
   exists(documentId: string): Promise<boolean>;
   verifyUser(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null>;
   addFavoriteFilm(userId: string, filmId: string): Promise<DocumentType<UserEntity> | null>;
+  deleteFavoriteFilm(userId: string, filmId: string): Promise<DocumentType<UserEntity> | null>;
   updateById(userId: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null>;
 }

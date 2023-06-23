@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
   "email": "torans@overlook.ch",
-  "userName": "Jack",
+  "name": "Jack",
   "password": "123456"
 }
 
@@ -18,15 +18,15 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "president@dka.local",
-  "password": "1234567"
+  "email": "torans@overlook.ch",
+  "password": "123456"
 }
 
 ###
 
 ## Отправить изображение
 
-POST http://localhost:5000/users/6491f4743ee80ff08a87a97b/avatar HTTP/1.1
+POST http://localhost:5000/users/6495d9775f81977d52549766/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW

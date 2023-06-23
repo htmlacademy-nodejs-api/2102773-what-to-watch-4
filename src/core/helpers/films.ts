@@ -15,9 +15,9 @@ export function createFilm(filmData: string): Film {
     director,
     runTime,
     commentsCount,
-    userName,
+    name,
     email,
-    avatarPath,
+    avatar,
     password,
     posterImage,
     backgroundImage,
@@ -25,9 +25,9 @@ export function createFilm(filmData: string): Film {
   ] = filmData.replace('\n', '').split('\t');
 
   const user = {
-    userName,
+    name,
     email,
-    avatarPath,
+    avatar,
     password
   };
 
@@ -40,7 +40,7 @@ export function createFilm(filmData: string): Film {
     rating: Number.parseFloat(rating),
     previewVideoLink,
     videoLink,
-    starrings: starring.split(';').map((name) => (name)),
+    starrings: starring.split(';').map((userName) => (userName)),
     director,
     runTime: Number.parseInt(runTime, 10),
     commentsCount: Number.parseInt(commentsCount, 10),

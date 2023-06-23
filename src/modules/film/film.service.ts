@@ -31,7 +31,10 @@ export default class FilmService implements FilmServiceInterface {
   }
 
   public async findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null> {
-    return this.filmModel.findOne({title: filmName}).exec();
+    return this.filmModel
+      .findOne({title: filmName})
+      .populate(['userId'])
+      .exec();
   }
 
   public async find(count?: number): Promise<DocumentType<FilmEntity>[]> {
@@ -73,7 +76,9 @@ export default class FilmService implements FilmServiceInterface {
 
     const favoriteFilms = user.favoriteFilms;
     return this.filmModel
-      .find({_id: favoriteFilms});
+      .find({_id: favoriteFilms})
+      .populate(['userId'])
+      .exec();
   }
 
   public async exists(documentId: string): Promise<boolean> {

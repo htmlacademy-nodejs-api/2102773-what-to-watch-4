@@ -58,10 +58,10 @@ export const adaptCreateCommentToServer =
     rating: comment.rating,
   });
 
-export const adaptAvatarToServer =
+export const adaptImageToServer =
   (file: string) => {
     const formData = new FormData();
-    formData.set('avatar', file);
+    formData.set('image', file);
 
     return formData;
   };

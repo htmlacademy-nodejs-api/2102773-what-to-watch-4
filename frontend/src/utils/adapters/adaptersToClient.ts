@@ -53,16 +53,16 @@ export const adaptFilmToClient =
 
 export const adaptUserToClient =
   (user: UserDto): User => ({
-    name: user.userName,
+    name: user.name,
     email: user.email,
-    avatarUrl: user.avatarPath,
+    avatarUrl: user.avatar,
   });
 
 export const adaptLoginToClient =
  (user: UserWithTokenDto): User => ({
-   name: user.userName,
+   name: user.name,
    email: user.email,
-   avatarUrl: user.avatarPath,
+   avatarUrl: user.avatar,
    token: user.token,
  });
 

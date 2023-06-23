@@ -25,6 +25,7 @@ import { UserServiceInterface } from '../user/user-service.interface.js';
 //import FavoriteUserRdo from '../user/rdo/favorite-user.rdo.js';
 import { ConfigInterface } from '../../core/config/config.interface.js';
 import { RestSchema } from '../../core/config/rest.schema.js';
+//import FavoriteFilmRdo from './rdo/favorite-film.rdo.js';
 
 type ParamsFilmDetails = {
   filmId: string;
@@ -196,9 +197,9 @@ export default class FilmController extends Controller {
     res: Response
   ): Promise<void> {
     const {filmId} = params;
-    await this.userService.addFavoriteFilm(user.id, filmId);
+    await this.userService.deleteFavoriteFilm(user.id, filmId);
     const films = await this.filmService.findById(filmId);
-    this.noContent(res, {...fillDTO(FilmRdo, films), isFavorite: true});
+    this.ok(res, {...fillDTO(FilmRdo, films), isFavorite: false});
   }
 
   public async delete(

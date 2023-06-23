@@ -38,10 +38,10 @@ export const promoData = createSlice({
         }
       })
       .addCase(setFavorite.fulfilled, (state, action) => {
-        state.promoFilm = action.payload;
+        state.promoFilm = adaptFilmToClient(action.payload);
       })
       .addCase(unsetFavorite.fulfilled, (state, action) => {
-        state.promoFilm = action.payload;
+        state.promoFilm = adaptFilmToClient(action.payload);
       });
   },
 });

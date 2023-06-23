@@ -1,4 +1,4 @@
 export default class UpdateUserDto {
-  public avatarPath?: string;
-  public userName?: string;
+  public avatar?: string;
+  public name?: string;
 }
