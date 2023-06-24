@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { FilmGenre } from '../../../types/film-genre.enum.js';
 import UserRdo from '../../user/rdo/user.rdo.js';
 
-export default class FilmRdo {
+export default class FavoriteFilmRdo {
   @Expose()
   public id!: string;
 
@@ -48,6 +48,9 @@ export default class FilmRdo {
 
   @Expose()
   public backgroundColor!: string;
+
+  @Expose()
+  public isFavorite!: boolean;
 
   @Expose()
   public rating!: number;

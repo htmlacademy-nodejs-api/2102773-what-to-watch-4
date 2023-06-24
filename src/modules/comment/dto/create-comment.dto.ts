@@ -5,9 +5,6 @@ export default class CreateCommentDto {
   @Length(5, 1024, {message: 'Min length is 5, max is 1024'})
   public text!: string;
 
-  // @IsMongoId({message: 'filmId field must be a valid id'})
-  // public filmId!: string;
-
   public userId!: string;
 
   @Min(1, {message: 'Minimum rating is 1'})

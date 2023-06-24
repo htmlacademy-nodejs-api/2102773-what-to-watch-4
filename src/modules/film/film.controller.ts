@@ -13,7 +13,6 @@ import FilmRdo from './rdo/film.rdo.js';
 import { fillDTO } from '../../core/helpers/index.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { RequestQuery } from '../../types/request-query.type.js';
-//import FilmGenreDto from './dto/film-genre.dto.js';
 import {CommentServiceInterface} from '../comment/comment-service.interface.js';
 import CommentRdo from '../comment/rdo/comment.rdo.js';
 import { ValidateObjectIdMiddleware } from '../../core/middleware/validate-objectid.middleware.js';
@@ -22,10 +21,9 @@ import { DocumentExistsMiddleware } from '../../core/middleware/document-exists.
 import { PrivateRouteMiddleware } from '../../core/middleware/private-route.middleware.js';
 import { PROMO_FILM_NAME } from './film.constant.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
-//import FavoriteUserRdo from '../user/rdo/favorite-user.rdo.js';
 import { ConfigInterface } from '../../core/config/config.interface.js';
 import { RestSchema } from '../../core/config/rest.schema.js';
-//import FavoriteFilmRdo from './rdo/favorite-film.rdo.js';
+import FavoriteFilmRdo from './rdo/favorite.-film.rdo.js';
 
 type ParamsFilmDetails = {
   filmId: string;
@@ -189,7 +187,7 @@ export default class FilmController extends Controller {
     const {filmId} = params;
     await this.userService.addFavoriteFilm(user.id, filmId);
     const films = await this.filmService.findById(filmId);
-    this.ok(res, {...fillDTO(FilmRdo, films), isFavorite: true});
+    this.ok(res, {...fillDTO(FavoriteFilmRdo, films), isFavorite: true});
   }
 
   public async deleteFavoriteFilm(
@@ -199,7 +197,7 @@ export default class FilmController extends Controller {
     const {filmId} = params;
     await this.userService.deleteFavoriteFilm(user.id, filmId);
     const films = await this.filmService.findById(filmId);
-    this.ok(res, {...fillDTO(FilmRdo, films), isFavorite: false});
+    this.ok(res, {...fillDTO(FavoriteFilmRdo, films), isFavorite: false});
   }
 
   public async delete(

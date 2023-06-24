@@ -2,7 +2,6 @@ import {DocumentType} from '@typegoose/typegoose';
 import {FilmEntity} from './film.entity.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
-//import { FilmGenre } from '../../types/film-genre.enum.js';
 import { DocumentExistsInterface } from '../../types/document-exists.interface.js';
 
 export interface FilmServiceInterface extends DocumentExistsInterface {

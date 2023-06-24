@@ -13,11 +13,6 @@ enum Year {
   Last = 2023
 }
 
-// enum Rating {
-//   Max = 10,
-//   Min = 0
-// }
-
 enum Runtime {
   Max = 10,
   Min = 0
