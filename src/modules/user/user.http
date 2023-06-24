@@ -5,9 +5,8 @@ POST http://localhost:5000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "torans@overlook.lhi",
-  "avatarPath": "torrance.png",
-  "userName": "Jack",
+  "email": "torans@overlook.ch",
+  "name": "Jack",
   "password": "123456"
 }
 
@@ -19,7 +18,7 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "torans@overlook.lhi",
+  "email": "torans@overlook.ch",
   "password": "123456"
 }
 
@@ -27,7 +26,7 @@ Content-Type: application/json
 
 ## Отправить изображение
 
-POST http://localhost:5000/users/1/avatar HTTP/1.1
+POST http://localhost:5000/users/6495d9775f81977d52549766/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -43,5 +42,5 @@ Content-Type: image/jpeg
 
 ## Проверить токен пользователя
 GET http://localhost:5000/users/login HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0ODM1YjU1NGMzODkxZmMwYWY4MWEwOSIsImlhdCI6MTY4Njc2NTY0NSwiZXhwIjoxNjg2OTM4NDQ1fQ.TQMklWB2t61xVzK-rbgMiYQZOqGsLHQUvBBsmYISvao
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhIiwiaWQiOiI2NDkzNWIzZGMyZjQ1M2Q2ZWQ5Y2VkZTYiLCJpYXQiOjE2ODczNzg5NTAsImV4cCI6MTY4NzU1MTc1MH0.kM4wQSXWUeJLIBdNYV4B1N6P6xWSkKBAD6QMjWsiCNY
 ###

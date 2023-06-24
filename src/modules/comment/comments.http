@@ -1,12 +1,11 @@
 ## Создать комментарий
-POST http://localhost:5000/comments HTTP/1.1
+POST http://localhost:5000/comments/64935b3dc2f453d6ed9cede8 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0ODM1YjU1NGMzODkxZmMwYWY4MWEwOSIsImlhdCI6MTY4Njc2NTY0NSwiZXhwIjoxNjg2OTM4NDQ1fQ.TQMklWB2t61xVzK-rbgMiYQZOqGsLHQUvBBsmYISvao
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhIiwiaWQiOiI2NDkzNWIzZGMyZjQ1M2Q2ZWQ5Y2VkZTYiLCJpYXQiOjE2ODczNzg5NTAsImV4cCI6MTY4NzU1MTc1MH0.kM4wQSXWUeJLIBdNYV4B1N6P6xWSkKBAD6QMjWsiCNY
 
 {
-  "text": "Проверка авторизации",
-  "filmId": "6486ef3d116b216841237708",
-  "rating": 1
+  "text": "Проверка авторизации 11",
+  "rating": 6
 }
 
 ###

@@ -5,11 +5,12 @@ export default class FavoriteUserRdo {
   public email!: string ;
 
   @Expose()
-  public avatarPath!: string;
+  public avatar!: string;
 
   @Expose()
-  public userName!: string;
+  public name!: string;
 
   @Expose()
   public favoriteFilms!: string[];
+
 }

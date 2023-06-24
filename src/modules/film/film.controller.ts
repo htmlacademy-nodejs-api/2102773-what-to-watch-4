@@ -13,7 +13,6 @@ import FilmRdo from './rdo/film.rdo.js';
 import { fillDTO } from '../../core/helpers/index.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { RequestQuery } from '../../types/request-query.type.js';
-import FilmGenreDto from './dto/film-genre.dto.js';
 import {CommentServiceInterface} from '../comment/comment-service.interface.js';
 import CommentRdo from '../comment/rdo/comment.rdo.js';
 import { ValidateObjectIdMiddleware } from '../../core/middleware/validate-objectid.middleware.js';
@@ -22,10 +21,13 @@ import { DocumentExistsMiddleware } from '../../core/middleware/document-exists.
 import { PrivateRouteMiddleware } from '../../core/middleware/private-route.middleware.js';
 import { PROMO_FILM_NAME } from './film.constant.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
-import FavoriteUserRdo from '../user/rdo/favorite-user.rdo.js';
+import { ConfigInterface } from '../../core/config/config.interface.js';
+import { RestSchema } from '../../core/config/rest.schema.js';
+import FavoriteFilmRdo from './rdo/favorite.-film.rdo.js';
 
 type ParamsFilmDetails = {
   filmId: string;
+  genre: string;
 } | ParamsDictionary
 
 @injectable()
@@ -35,8 +37,9 @@ export default class FilmController extends Controller {
     @inject(AppComponent.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
     @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
     @inject(AppComponent.UserServiceInterface) private readonly userService: UserServiceInterface,
+    @inject(AppComponent.ConfigInterface) configService: ConfigInterface<RestSchema>,
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for FilmController…');
 
@@ -89,11 +92,12 @@ export default class FilmController extends Controller {
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId')
       ]
     });
-    this.addRoute({path: '/genre', method: HttpMethod.Post, handler: this.findFilmsByGenre});
+    this.addRoute({path: '/genre/:genre', method: HttpMethod.Get, handler: this.findFilmsByGenre});
+
     this.addRoute({
       path: '/favorite/:filmId/',
-      method: HttpMethod.Patch,
-      handler: this.addOrDeleteFavoriteFilm,
+      method: HttpMethod.Post,
+      handler: this.addFavoriteFilm,
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('filmId')
@@ -101,7 +105,17 @@ export default class FilmController extends Controller {
     });
 
     this.addRoute({
-      path: '/:filmId/comments',
+      path: '/favorite/:filmId/',
+      method: HttpMethod.Delete,
+      handler: this.deleteFavoriteFilm,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId')
+      ]
+    });
+
+    this.addRoute({
+      path: '/comments/:filmId',
       method: HttpMethod.Get,
       handler: this.getComments,
       middlewares: [
@@ -153,10 +167,10 @@ export default class FilmController extends Controller {
   }
 
   public async findFilmsByGenre(
-    { body, query }: Request<Record<string, unknown>, Record<string, unknown>, FilmGenreDto, RequestQuery>,
+    { params }: Request<ParamsFilmDetails, Record<string, unknown>, Record<string, unknown>, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const filmsByGenre = await this.filmService.findByGenre(body.genre, query.limit);
+    const filmsByGenre = await this.filmService.findByGenre(params.genre);
     this.ok(res, fillDTO(FilmRdo, filmsByGenre));
   }
 
@@ -166,13 +180,24 @@ export default class FilmController extends Controller {
     this.ok(res, fillDTO(FilmRdo, favoriteFilms));
   }
 
-  public async addOrDeleteFavoriteFilm(
+  public async addFavoriteFilm(
     {params, user}: Request<ParamsFilmDetails, Record<string, unknown>, Record<string, unknown>>,
     res: Response
   ): Promise<void> {
     const {filmId} = params;
-    const favorite = await this.userService.addFavoriteFilm(user.id, filmId);
-    this.ok(res, fillDTO(FavoriteUserRdo ,favorite));
+    await this.userService.addFavoriteFilm(user.id, filmId);
+    const films = await this.filmService.findById(filmId);
+    this.ok(res, {...fillDTO(FavoriteFilmRdo, films), isFavorite: true});
+  }
+
+  public async deleteFavoriteFilm(
+    {params, user}: Request<ParamsFilmDetails, Record<string, unknown>, Record<string, unknown>>,
+    res: Response
+  ): Promise<void> {
+    const {filmId} = params;
+    await this.userService.deleteFavoriteFilm(user.id, filmId);
+    const films = await this.filmService.findById(filmId);
+    this.ok(res, {...fillDTO(FavoriteFilmRdo, films), isFavorite: false});
   }
 
   public async delete(

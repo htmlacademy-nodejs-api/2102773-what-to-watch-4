@@ -15,9 +15,9 @@ export default class CommentService implements CommentServiceInterface {
     @inject(AppComponent.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>
   ) {}
 
-  public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
-    const comment = await this.commentModel.create(dto);
-    this.logger.info(`New comment for ${dto.filmId} created`);
+  public async create(filmId: string, dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
+    const comment = await this.commentModel.create({...dto, filmId});
+    this.logger.info(`New comment for ${filmId} created`);
     return comment.populate('userId');
   }
 
