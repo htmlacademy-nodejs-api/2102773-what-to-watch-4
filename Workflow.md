@@ -91,3 +91,29 @@ npm start
 ### Остальное
 
 Все остальные файлы в проекте являются служебными. Пожалуйста, не удаляйте и не изменяйте их самовольно. Только если того требует задание или наставник.
+
+## Переменные окружения
+
+### `PORT`
+PORT=9999 - порт, на котором запускается проект
+
+### `SALT`
+SALT=example - соль для генерации токена пароля
+
+### `DB_HOST`
+DB_HOST=192.168.1.1 - хост для запуска проекта
+
+### `DB_USER`
+DB_USER=example - username для входа в MongoDB
+
+### `DB_PASSWORD`
+DB_PASSWORD=example - password для входа в MongoDB
+
+### `DB_NAME`
+DB_NAME=example - название базы данных в MongoDB
+
+### `UPLOAD_DIRECTORY`
+UPLOAD_DIRECTORY=upload-example - директория для сохранения внешних файлов
+
+### `JWT_SECRET`
+JWT_SECRET=example - Секретный ключ используется для подписи веб-токена JSON

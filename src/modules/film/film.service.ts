@@ -16,7 +16,7 @@ export default class FilmService implements FilmServiceInterface {
   constructor(
     @inject(AppComponent.LoggerInterface) private readonly logger: LoggerInterface,
     @inject(AppComponent.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>,
-    @inject(AppComponent.UserModel) private readonly userModel: types.ModelType<UserEntity>
+    @inject(AppComponent.UserModel) private readonly userModel: types.ModelType<UserEntity>,
   ) {}
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {

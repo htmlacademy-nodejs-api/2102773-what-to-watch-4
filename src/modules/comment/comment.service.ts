@@ -30,4 +30,11 @@ export default class CommentService implements CommentServiceInterface {
       .exec();
   }
 
+  public async deleteByFilmId(filmId: string): Promise<DocumentType<CommentEntity>[] | null> {
+    return this.commentModel
+      .find({filmId})
+      .deleteMany()
+      .exec();
+  }
+
 }
