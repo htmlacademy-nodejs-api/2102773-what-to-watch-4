@@ -1,5 +1,5 @@
 import { FilmGenre } from '../../../types/film-genre.enum.js';
-import { IsDateString, IsEnum, IsOptional, MaxLength, MinLength } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export default class UpdateFilmDto {
   @IsOptional()
@@ -11,10 +11,6 @@ export default class UpdateFilmDto {
   @MinLength(20, {message: 'Minimum description length must be 20'})
   @MaxLength(1024, {message: 'Maximum description length must be 1024'})
   public description?: string;
-
-  @IsOptional()
-  @IsDateString({}, {message: 'postDate must be valid ISO date'})
-  public postDate?: Date;
 
   @IsOptional()
   @IsEnum(FilmGenre, {message: 'genre must be comedy, crime, documentary, drama, horror, family, romance, scifi, thriller'})
@@ -35,8 +31,12 @@ export default class UpdateFilmDto {
 
   public runTime?: number;
 
+  @IsOptional()
+  @IsString({message: 'posterImage is required'})
   public posterImage?: string;
 
+  @IsOptional()
+  @IsString({message: 'backgroundImage is required'})
   public backgroundImage?: string;
 
   public backgroundColor?: string;

@@ -24,6 +24,7 @@ import { UserServiceInterface } from '../user/user-service.interface.js';
 import { ConfigInterface } from '../../core/config/config.interface.js';
 import { RestSchema } from '../../core/config/rest.schema.js';
 import FavoriteFilmRdo from './rdo/favorite.-film.rdo.js';
+import FilmsListRdo from './rdo/films-list.rdo.js';
 
 type ParamsFilmDetails = {
   filmId: string;
@@ -149,7 +150,7 @@ export default class FilmController extends Controller {
 
   public async index(_req: Request, res: Response): Promise<void> {
     const films = await this.filmService.find();
-    this.ok(res, fillDTO(FilmRdo, films));
+    this.ok(res, fillDTO(FilmsListRdo, films));
   }
 
   public async show(
@@ -171,13 +172,13 @@ export default class FilmController extends Controller {
     res: Response
   ): Promise<void> {
     const filmsByGenre = await this.filmService.findByGenre(params.genre);
-    this.ok(res, fillDTO(FilmRdo, filmsByGenre));
+    this.ok(res, fillDTO(FilmsListRdo, filmsByGenre));
   }
 
   public async getFavoriteFilms({ user }: Request<Record<string, unknown>, Record<string, unknown>>,
     res: Response,): Promise<void> {
     const favoriteFilms = await this.filmService.findFavoriteFilms(user.id);
-    this.ok(res, fillDTO(FilmRdo, favoriteFilms));
+    this.ok(res, fillDTO(FilmsListRdo, favoriteFilms));
   }
 
   public async addFavoriteFilm(
@@ -201,18 +202,39 @@ export default class FilmController extends Controller {
   }
 
   public async delete(
-    {params}: Request<ParamsFilmDetails>,
+    {params, user}: Request<ParamsFilmDetails, Record<string, unknown>>,
     res: Response
   ): Promise<void> {
     const {filmId} = params;
+
+    const film = await this.filmService.findById(params.filmId);
+
+    if (String(film?.userId._id) !== user.id) {
+      throw new HttpError(
+        StatusCodes.CONFLICT,
+        `User with id «${user.id}» can't delete film with id «${film?.userId._id}»`,
+        'FilmController'
+      );
+    }
     const result = await this.filmService.deleteById(filmId);
+    await this.commentService.deleteByFilmId(filmId);
     this.noContent(res, result);
   }
 
   public async update(
-    {body, params}: Request<ParamsFilmDetails, Record<string, unknown>, UpdateFilmDto>,
+    {body, params, user}: Request<ParamsFilmDetails, Record<string, unknown>, UpdateFilmDto>,
     res: Response
   ): Promise<void> {
+
+    const film = await this.filmService.findById(params.filmId);
+
+    if (String(film?.userId._id) !== user.id) {
+      throw new HttpError(
+        StatusCodes.CONFLICT,
+        `User with id «${user.id}» can't edit film with id «${film?.userId._id}»`,
+        'FilmController'
+      );
+    }
     const updateFilm = await this.filmService.updateById(params.filmId, body);
     this.ok(res, fillDTO(FilmRdo, updateFilm));
   }
