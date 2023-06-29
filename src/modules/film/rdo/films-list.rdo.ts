@@ -4,6 +4,9 @@ import UserRdo from '../../user/rdo/user.rdo.js';
 
 export default class FilmsListRdo {
   @Expose()
+  public id!: string;
+
+  @Expose()
   public title!: string;
 
   @Expose({ name: 'createdAt'})
