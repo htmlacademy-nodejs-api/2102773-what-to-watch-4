@@ -19,12 +19,12 @@ import { ValidateObjectIdMiddleware } from '../../core/middleware/validate-objec
 import { ValidateDtoMiddleware } from '../../core/middleware/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../core/middleware/document-exists.middleware.js';
 import { PrivateRouteMiddleware } from '../../core/middleware/private-route.middleware.js';
-import { PROMO_FILM_NAME } from './film.constant.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
 import { ConfigInterface } from '../../core/config/config.interface.js';
 import { RestSchema } from '../../core/config/rest.schema.js';
 import FavoriteFilmRdo from './rdo/favorite.-film.rdo.js';
 import FilmsListRdo from './rdo/films-list.rdo.js';
+import { PROMO_FILM_INDEX } from './film.constant.js';
 
 type ParamsFilmDetails = {
   filmId: string;
@@ -148,8 +148,11 @@ export default class FilmController extends Controller {
     );
   }
 
-  public async index(_req: Request, res: Response): Promise<void> {
-    const films = await this.filmService.find();
+  public async index(
+    { query }: Request<ParamsFilmDetails, Record<string, unknown>, Record<string, unknown>,RequestQuery>,
+    res: Response
+  ): Promise<void> {
+    const films = await this.filmService.find(query.limit);
     this.ok(res, fillDTO(FilmsListRdo, films));
   }
 
@@ -163,15 +166,15 @@ export default class FilmController extends Controller {
   }
 
   public async getPromoFilm(_req: Request, res: Response): Promise<void> {
-    const promoFilm = await this.filmService.findByFilmName(PROMO_FILM_NAME);
-    this.ok(res, fillDTO(FilmRdo, promoFilm));
+    const films = await this.filmService.find();
+    this.ok(res, fillDTO(FilmRdo, films[PROMO_FILM_INDEX]));
   }
 
   public async findFilmsByGenre(
-    { params }: Request<ParamsFilmDetails, Record<string, unknown>, Record<string, unknown>, RequestQuery>,
+    { params, query }: Request<ParamsFilmDetails, Record<string, unknown>, Record<string, unknown>, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const filmsByGenre = await this.filmService.findByGenre(params.genre);
+    const filmsByGenre = await this.filmService.findByGenre(params.genre, query.limit);
     this.ok(res, fillDTO(FilmsListRdo, filmsByGenre));
   }
 
